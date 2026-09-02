@@ -1,0 +1,31 @@
+image:
+  pullPolicy: Always
+  tag: latest
+
+podAnnotations:
+  cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
+
+priorityClassName: system-cluster-critical
+
+autoscaling:
+  enabled: true
+
+volumes:
+  - name: foo
+    secret:
+      secretName: mysecret
+      optional: false
+
+volumeMounts:
+  - name: foo
+    mountPath: "/etc/foo"
+    readOnly: true
+
+podAntiAffinityPreset: hard
+podAntiAffinityPresetKey: kubernetes.io/hostname
+
+nodeSelector:
+  node-role.kubernetes.io/control-plane: ""
+tolerations:
+  - key: node-role.kubernetes.io/control-plane
+    effect: NoSchedule

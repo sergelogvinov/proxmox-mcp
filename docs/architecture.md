@@ -160,7 +160,7 @@ internal/
 ## Core Dependencies
 
 ```go
-module github.com/sergelogvinov/mimiops-mcp
+module github.com/sergelogvinov/proxmox-mcp
 
 go 1.26
 

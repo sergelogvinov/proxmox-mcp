@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 // Package logger provides the shared slog-based structured logger used across
-// the mimiops-mcp server.
+// the proxmox-mcp server.
 package logger
 
 import (

@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=https://json.schemastore.org/chart.json
+apiVersion: v2
+name: proxmox-mcp
+description: Proxmox MCP server for Kubernetes
+type: application
+home: https://github.com/sergelogvinov/proxmox-mcp
+sources:
+  - https://github.com/sergelogvinov/proxmox-mcp
+keywords:
+  - kubernetes
+  - mcp
+maintainers:
+  - name: sergelogvinov
+    url: https://github.com/sergelogvinov
+#
+# Versions are expected to follow Semantic Versioning (https://semver.org/)
+version: 0.0.1
+#
+# renovate: datasource=docker depName=ghcr.io/sergelogvinov/postgresql
+appVersion: v0.0.1

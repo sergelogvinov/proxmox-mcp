@@ -1,6 +1,6 @@
 module github.com/sergelogvinov/proxmox-mcp
 
-go 1.26.5
+go 1.26.6
 
 require (
 	github.com/luthermonson/go-proxmox v0.5.1
