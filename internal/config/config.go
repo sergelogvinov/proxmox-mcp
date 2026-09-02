@@ -17,6 +17,18 @@ limitations under the License.
 // Package config defines the configuration structure for the proxmox-mcp server.
 package config
 
+import (
+	"errors"
+	"fmt"
+	"io"
+	"os"
+	"path/filepath"
+	"strings"
+
+	pxpool "github.com/sergelogvinov/proxmox-mcp/internal/proxmoxpool"
+	yaml "go.yaml.in/yaml/v3"
+)
+
 // Config holds the configuration for the proxmox-mcp server.
 type Config struct {
 	Port             int
@@ -24,4 +36,73 @@ type Config struct {
 	AllowDestructive bool
 	LogLevel         string
 	LogFormat        string
+}
+
+// ClustersConfig is proxmox multi-cluster cloud config.
+type ClustersConfig struct {
+	Clusters []*pxpool.ProxmoxCluster `yaml:"clusters,omitempty"`
+}
+
+// Errors for Reading Cloud Config
+var (
+	ErrMissingPVERegion       = errors.New("missing PVE region in cloud config")
+	ErrMissingPVEAPIURL       = errors.New("missing PVE API URL in cloud config")
+	ErrAuthCredentialsMissing = errors.New("user, token or file credentials are required")
+	ErrInvalidAuthCredentials = errors.New("must specify one of user, token or file credentials, not multiple")
+	ErrInvalidCloudConfig     = errors.New("invalid cloud config")
+)
+
+// ReadCloudConfig reads cloud config from a reader.
+func ReadCloudConfig(config io.Reader) (ClustersConfig, error) {
+	cfg := ClustersConfig{}
+
+	if config != nil {
+		if err := yaml.NewDecoder(config).Decode(&cfg); err != nil {
+			return ClustersConfig{}, errors.Join(ErrInvalidCloudConfig, err)
+		}
+	}
+
+	for idx, c := range cfg.Clusters {
+		hasTokenIDInline := c.TokenID != ""
+		hasTokenIDFile := c.TokenIDFile != ""
+		hasTokenSecretInline := c.TokenSecret != ""
+		hasTokenSecretFile := c.TokenSecretFile != ""
+
+		if (hasTokenIDInline && hasTokenIDFile) || (hasTokenSecretInline && hasTokenSecretFile) {
+			return ClustersConfig{}, fmt.Errorf("cluster #%d: %w", idx+1, ErrInvalidAuthCredentials)
+		}
+
+		hasTokenID := hasTokenIDInline || hasTokenIDFile
+		hasTokenSecret := hasTokenSecretInline || hasTokenSecretFile
+
+		hasUserAuth := c.Username != "" && c.Password != ""
+		if (hasTokenID && hasUserAuth) || (hasTokenSecret && hasUserAuth) {
+			return ClustersConfig{}, fmt.Errorf("cluster #%d: %w", idx+1, ErrInvalidAuthCredentials)
+		}
+
+		if !(hasTokenID && hasTokenSecret) && !hasUserAuth {
+			return ClustersConfig{}, fmt.Errorf("cluster #%d: %w", idx+1, ErrAuthCredentialsMissing)
+		}
+
+		if c.Region == "" {
+			return ClustersConfig{}, fmt.Errorf("cluster #%d: %w", idx+1, ErrMissingPVERegion)
+		}
+
+		if c.URL == "" || !strings.HasPrefix(c.URL, "http") {
+			return ClustersConfig{}, fmt.Errorf("cluster #%d: %w", idx+1, ErrMissingPVEAPIURL)
+		}
+	}
+
+	return cfg, nil
+}
+
+// ReadCloudConfigFromFile reads cloud config from a file.
+func ReadCloudConfigFromFile(file string) (ClustersConfig, error) {
+	f, err := os.Open(filepath.Clean(file))
+	if err != nil {
+		return ClustersConfig{}, fmt.Errorf("error reading %s: %v", file, err)
+	}
+	defer f.Close() // nolint: errcheck
+
+	return ReadCloudConfig(f)
 }

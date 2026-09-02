@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// Package tools implements the MCP tool handlers, grouped by domain:
-// cluster, vm, container, storage, backup.
 package tools
 
 import (
@@ -27,37 +25,34 @@ import (
 
 // ClustersListResult is the structured output of the proxmox_clusters_list tool.
 type ClustersListResult struct {
-	// Clusters is the sorted list of configured Proxmox cluster names (regions).
 	Clusters []string `json:"clusters,omitempty" jsonschema:"Clusters names (regions)"`
-	// Count is the number of configured clusters.
-	Count int `json:"count" jsonschema:"Number of configured clusters"`
+	Count    int      `json:"count" jsonschema:"Number of configured clusters"`
 }
 
-// registerClusterTools registers the cluster management tools.
-func (t *ProxmoxTools) registerClusterTools(srv *mcp.Server) {
+// RegisterClustersList registers the clusters list tool.
+func (t *ProxmoxTools) RegisterClustersList(srv *mcp.Server) {
 	mcp.AddTool(srv,
 		&mcp.Tool{
 			Name:        "proxmox_clusters_list",
 			Description: "List the Proxmox clusters (regions) configured in the MCP server.",
+			Annotations: &mcp.ToolAnnotations{
+				IdempotentHint: true,
+				ReadOnlyHint:   true,
+				OpenWorldHint:  new(false),
+			},
 		},
-		func(_ context.Context, _ *mcp.CallToolRequest, _ struct{}) (*mcp.CallToolResult, any, error) {
-			result, err := t.ClustersList()
-			if err != nil {
-				return nil, ClustersListResult{}, err
-			}
-
-			return &mcp.CallToolResult{}, *result, nil
-		},
+		t.handlerClustersList,
 	)
 }
 
-// ClustersList returns the list of configured Proxmox clusters (regions).
-func (t *ProxmoxTools) ClustersList() (*ClustersListResult, error) {
+func (t *ProxmoxTools) handlerClustersList(_ context.Context, _ *mcp.CallToolRequest, _ struct{}) (*mcp.CallToolResult, any, error) {
 	clusters := t.pool.GetRegions()
 	slices.Sort(clusters)
 
-	return &ClustersListResult{
+	result := &ClustersListResult{
 		Clusters: clusters,
 		Count:    len(clusters),
-	}, nil
+	}
+
+	return &mcp.CallToolResult{}, *result, nil
 }

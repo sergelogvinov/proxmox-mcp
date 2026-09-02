@@ -158,7 +158,7 @@ func printEncoded(value any, format OutputFormat) error {
 		err  error
 	)
 
-	switch format {
+	switch format { //nolint:exhaustive
 	case OutputJSON:
 		data, err = json.MarshalIndent(value, "", "  ")
 	case OutputYAML:

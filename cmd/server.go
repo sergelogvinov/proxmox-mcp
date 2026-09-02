@@ -31,7 +31,7 @@ import (
 )
 
 // shutdownTimeout bounds the graceful shutdown of the HTTP server.
-const shutdownTimeout = 1 * time.Second
+const shutdownTimeout = 5 * time.Second
 
 // newServerCmd creates the `server` subcommand that runs the MCP server over HTTP/SSE.
 func newServerCmd(flags *Flags) *cobra.Command {
@@ -111,7 +111,7 @@ func runServer(ctx context.Context, f *Flags) error {
 			return err
 		}
 	case <-ctx.Done():
-		shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
+		shutdownCtx, cancel := context.WithTimeout(ctx, shutdownTimeout)
 		defer cancel()
 
 		if err := httpServer.Shutdown(shutdownCtx); err != nil {

@@ -155,6 +155,21 @@ func (c *ProxmoxPool) GetProxmoxCluster(region string) (*goproxmox.APIClient, er
 	return nil, ErrRegionNotFound
 }
 
+// GetClusterVersion returns the Proxmox version of the cluster in the given region.
+func (c *ProxmoxPool) GetClusterVersion(ctx context.Context, region string) (string, error) {
+	client, err := c.GetProxmoxCluster(region)
+	if err != nil {
+		return "", err
+	}
+
+	v, err := client.Version(ctx)
+	if err != nil {
+		return "", err
+	}
+
+	return v.Version, nil
+}
+
 func readValueFromFile(path string) (string, error) {
 	if path == "" {
 		return "", fmt.Errorf("path cannot be empty")

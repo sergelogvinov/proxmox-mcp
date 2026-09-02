@@ -33,5 +33,6 @@ func NewProxmoxTools(pool *proxmoxpool.ProxmoxPool) *ProxmoxTools {
 
 // RegisterTools registers all proxmox-mcp tools on the MCP server.
 func (t *ProxmoxTools) RegisterTools(srv *mcp.Server) {
-	t.registerClusterTools(srv)
+	t.RegisterClustersDescribe(srv)
+	t.RegisterClustersList(srv)
 }
