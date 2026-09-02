@@ -24,6 +24,7 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 	"github.com/sergelogvinov/proxmox-mcp/internal/config"
+	"github.com/sergelogvinov/proxmox-mcp/internal/logger"
 	"github.com/sergelogvinov/proxmox-mcp/internal/proxmoxpool"
 	"github.com/sergelogvinov/proxmox-mcp/internal/server"
 	"github.com/sergelogvinov/proxmox-mcp/internal/tools"
@@ -71,9 +72,12 @@ func runTools(ctx context.Context, f *Flags, args []string) error {
 		return err
 	}
 
-	if _, err := newLogger(cfg); err != nil {
+	log, err := newLogger(cfg)
+	if err != nil {
 		return err
 	}
+
+	ctx = logger.Inject(ctx, log)
 
 	clusters, err := config.ReadCloudConfigFromFile(f.ConfigFile)
 	if err != nil {

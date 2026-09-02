@@ -1,0 +1,42 @@
+{
+  "$schema": "https://raw.githubusercontent.com/modelcontextprotocol/mcpb/main/schemas/mcpb-manifest-v0.4.schema.json",
+  "manifest_version": "0.4",
+  "name": "proxmox-mcp",
+  "version": "0.0.0",
+  "display_name": "Proxmox MCP Server",
+  "description": "Proxmox MCP is an opinionated MCP server for managing Proxmox environments",
+  "homepage": "https://github.com/sergelogvinov/proxmox-mcp",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Serge Logvinov",
+    "url": "https://github.com/sergelogvinov/proxmox-mcp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sergelogvinov/proxmox-mcp"
+  },
+  "server": {
+    "type": "binary",
+    "entry_point": "server/proxmox-mcp",
+    "mcp_config": {
+      "command": "${__dirname}/server/proxmox-mcp",
+      "args": [
+        "mcp"
+      ],
+      "env": {}
+    }
+  },
+  "tools_generated": true,
+  "prompts_generated": true,
+  "keywords": [
+    "proxmox"
+  ],
+  "user_config": {},
+  "compatibility": {
+    "platforms": [
+      "darwin",
+      "linux",
+      "win32"
+    ]
+  }
+}

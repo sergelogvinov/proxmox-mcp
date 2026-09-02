@@ -47,7 +47,6 @@ type ClustersConfig struct {
 var (
 	ErrMissingPVERegion       = errors.New("missing PVE region in cloud config")
 	ErrMissingPVEAPIURL       = errors.New("missing PVE API URL in cloud config")
-	ErrAuthCredentialsMissing = errors.New("user, token or file credentials are required")
 	ErrInvalidAuthCredentials = errors.New("must specify one of user, token or file credentials, not multiple")
 	ErrInvalidCloudConfig     = errors.New("invalid cloud config")
 )
@@ -78,10 +77,6 @@ func ReadCloudConfig(config io.Reader) (ClustersConfig, error) {
 		hasUserAuth := c.Username != "" && c.Password != ""
 		if (hasTokenID && hasUserAuth) || (hasTokenSecret && hasUserAuth) {
 			return ClustersConfig{}, fmt.Errorf("cluster #%d: %w", idx+1, ErrInvalidAuthCredentials)
-		}
-
-		if !(hasTokenID && hasTokenSecret) && !hasUserAuth {
-			return ClustersConfig{}, fmt.Errorf("cluster #%d: %w", idx+1, ErrAuthCredentialsMissing)
 		}
 
 		if c.Region == "" {

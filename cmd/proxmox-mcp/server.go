@@ -25,6 +25,7 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 	"github.com/sergelogvinov/proxmox-mcp/internal/config"
+	"github.com/sergelogvinov/proxmox-mcp/internal/logger"
 	"github.com/sergelogvinov/proxmox-mcp/internal/proxmoxpool"
 	"github.com/sergelogvinov/proxmox-mcp/internal/tools"
 	"github.com/spf13/cobra"
@@ -83,6 +84,7 @@ func runServer(ctx context.Context, f *Flags) error {
 	}, &mcp.ServerOptions{
 		Logger: log,
 	})
+	srv.AddReceivingMiddleware(loggingMiddleware)
 
 	tools.NewProxmoxTools(pool).RegisterTools(srv)
 
@@ -94,8 +96,12 @@ func runServer(ctx context.Context, f *Flags) error {
 	})
 
 	httpServer := &http.Server{
-		Addr:              fmt.Sprintf(":%d", cfg.Port),
-		Handler:           mux,
+		Addr: fmt.Sprintf(":%d", cfg.Port),
+		Handler: func() http.Handler {
+			return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				mux.ServeHTTP(w, r.WithContext(logger.Inject(r.Context(), log)))
+			})
+		}(),
 		ReadHeaderTimeout: 10 * time.Second,
 	}
 

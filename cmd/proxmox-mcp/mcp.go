@@ -21,6 +21,7 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 	"github.com/sergelogvinov/proxmox-mcp/internal/config"
+	"github.com/sergelogvinov/proxmox-mcp/internal/logger"
 	"github.com/sergelogvinov/proxmox-mcp/internal/proxmoxpool"
 	"github.com/sergelogvinov/proxmox-mcp/internal/tools"
 	"github.com/spf13/cobra"
@@ -66,16 +67,15 @@ func runMCP(ctx context.Context, f *Flags) error {
 		"allowDestructive", cfg.AllowDestructive,
 	)
 
-	opts := mcp.ServerOptions{
-		Logger: log,
-	}
-
 	srv := mcp.NewServer(&mcp.Implementation{
 		Name:    "proxmox-mcp",
 		Version: version,
-	}, &opts)
+	}, &mcp.ServerOptions{
+		Logger: log,
+	})
+	srv.AddReceivingMiddleware(loggingMiddleware)
 
 	tools.NewProxmoxTools(pool).RegisterTools(srv)
 
-	return srv.Run(ctx, &mcp.StdioTransport{})
+	return srv.Run(logger.Inject(ctx, log), &mcp.StdioTransport{})
 }

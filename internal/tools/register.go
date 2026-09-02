@@ -36,3 +36,13 @@ func (t *ProxmoxTools) RegisterTools(srv *mcp.Server) {
 	t.RegisterClustersDescribe(srv)
 	t.RegisterClustersList(srv)
 }
+
+// authorizationHeader returns the Authorization header value from an MCP
+// tool request, or an empty string if there is none.
+func authorizationHeader(req *mcp.CallToolRequest) string {
+	if req == nil || req.Extra == nil {
+		return ""
+	}
+
+	return req.Extra.Header.Get("Authorization")
+}

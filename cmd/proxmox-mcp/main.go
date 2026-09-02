@@ -19,6 +19,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log/slog"
 	"os"
@@ -26,6 +27,7 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/modelcontextprotocol/go-sdk/mcp"
 	"github.com/sergelogvinov/proxmox-mcp/internal/config"
 	"github.com/sergelogvinov/proxmox-mcp/internal/logger"
 	"github.com/spf13/cobra"
@@ -84,4 +86,46 @@ func newRootCmd() *cobra.Command {
 	)
 
 	return rootCmd
+}
+
+func loggingMiddleware(next mcp.MethodHandler) mcp.MethodHandler {
+	return func(ctx context.Context, method string, req mcp.Request) (mcp.Result, error) {
+		logger := logger.FromContext(ctx)
+
+		if ctr, ok := req.(*mcp.CallToolRequest); ok {
+			params := make([]any, 0)
+
+			params = append(params,
+				"method", "tools/call",
+				"name", ctr.Params.Name,
+			)
+
+			if ctr.Extra != nil {
+				authHeader := strings.TrimSpace(ctr.Extra.Header.Get("Authorization"))
+				if authHeader != "" {
+					if rest, ok := strings.CutPrefix(authHeader, "PVEAPIToken="); ok {
+						tokenID, _, ok := strings.Cut(rest, "=")
+						if ok && tokenID != "" {
+							params = append(params, "PVEAPIToken", tokenID)
+						}
+					}
+				}
+			}
+
+			if len(ctr.Params.Arguments) > 0 {
+				var raw map[string]any
+				if err := json.Unmarshal(ctr.Params.Arguments, &raw); err != nil {
+					raw = nil
+				}
+
+				for k, v := range raw {
+					params = append(params, k, fmt.Sprintf("%v", v))
+				}
+			}
+
+			logger.Info("calling", params...)
+		}
+
+		return next(ctx, method, req)
+	}
 }

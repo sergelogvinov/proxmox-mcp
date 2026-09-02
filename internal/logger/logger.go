@@ -64,7 +64,7 @@ func FromContext(ctx context.Context) *slog.Logger {
 		return logger
 	}
 
-	return slog.Default()
+	return slog.New(slog.DiscardHandler)
 }
 
 // New builds a slog logger writing to stderr with the configured level and

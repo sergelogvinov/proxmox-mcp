@@ -49,8 +49,8 @@ func (t *ProxmoxTools) RegisterClustersDescribe(srv *mcp.Server) {
 	)
 }
 
-func (t *ProxmoxTools) handlerClustersDescribe(ctx context.Context, _ *mcp.CallToolRequest, input clustersDescribeInput) (*mcp.CallToolResult, any, error) {
-	result, err := t.ClustersDescribe(ctx, input.Region)
+func (t *ProxmoxTools) handlerClustersDescribe(ctx context.Context, req *mcp.CallToolRequest, input clustersDescribeInput) (*mcp.CallToolResult, any, error) {
+	result, err := t.ClustersDescribe(ctx, input.Region, authorizationHeader(req))
 	if err != nil {
 		return nil, ClustersDescribeResult{}, err
 	}
@@ -59,8 +59,8 @@ func (t *ProxmoxTools) handlerClustersDescribe(ctx context.Context, _ *mcp.CallT
 }
 
 // ClustersDescribe returns details of the Proxmox cluster in the given region.
-func (t *ProxmoxTools) ClustersDescribe(ctx context.Context, region string) (*ClustersDescribeResult, error) {
-	version, err := t.pool.GetClusterVersion(ctx, region)
+func (t *ProxmoxTools) ClustersDescribe(ctx context.Context, region, authHeader string) (*ClustersDescribeResult, error) {
+	version, err := t.pool.GetClusterVersion(ctx, region, authHeader)
 	if err != nil {
 		return nil, err
 	}

@@ -46,70 +46,106 @@ type ProxmoxCluster struct {
 // ProxmoxPool is a Proxmox client pool of proxmox clusters.
 type ProxmoxPool struct {
 	clients map[string]*goproxmox.APIClient
+	configs map[string]*ProxmoxCluster
 }
 
-// NewProxmoxPool creates a new Proxmox cluster client.
+// NewProxmoxPool creates a new Proxmox cluster client pool.
 func NewProxmoxPool(config []*ProxmoxCluster, options ...proxmox.Option) (*ProxmoxPool, error) {
-	clusters := len(config)
-	if clusters > 0 {
-		clients := make(map[string]*goproxmox.APIClient, clusters)
+	if len(config) == 0 {
+		return nil, ErrClustersNotFound
+	}
 
-		for _, cfg := range config {
-			opts := []proxmox.Option{proxmox.WithUserAgent("ProxmoxMCP/1.0")}
-			opts = append(opts, options...)
+	clients := make(map[string]*goproxmox.APIClient, len(config))
+	configs := make(map[string]*ProxmoxCluster, len(config))
 
-			if cfg.Insecure {
-				httpTr := &http.Transport{
-					TLSClientConfig: &tls.Config{
-						InsecureSkipVerify: true,
-						MinVersion:         tls.VersionTLS12,
-					},
-				}
+	for _, cfg := range config {
+		if cfg.TokenID == "" && cfg.TokenIDFile != "" {
+			var err error
 
-				opts = append(opts, proxmox.WithHTTPClient(&http.Client{Transport: httpTr}))
-			}
-
-			if cfg.TokenID == "" && cfg.TokenIDFile != "" {
-				var err error
-
-				cfg.TokenID, err = readValueFromFile(cfg.TokenIDFile)
-				if err != nil {
-					return nil, err
-				}
-			}
-
-			if cfg.TokenSecret == "" && cfg.TokenSecretFile != "" {
-				var err error
-
-				cfg.TokenSecret, err = readValueFromFile(cfg.TokenSecretFile)
-				if err != nil {
-					return nil, err
-				}
-			}
-
-			if cfg.Username != "" && cfg.Password != "" {
-				opts = append(opts, proxmox.WithCredentials(&proxmox.Credentials{
-					Username: cfg.Username,
-					Password: cfg.Password,
-				}))
-			} else if cfg.TokenID != "" && cfg.TokenSecret != "" {
-				opts = append(opts, proxmox.WithAPIToken(cfg.TokenID, cfg.TokenSecret))
-			}
-
-			pxClient, err := goproxmox.NewAPIClient(cfg.URL, opts...)
+			cfg.TokenID, err = readValueFromFile(cfg.TokenIDFile)
 			if err != nil {
 				return nil, err
 			}
-
-			clients[cfg.Region] = pxClient
 		}
 
-		return &ProxmoxPool{
-			clients: clients,
-		}, nil
+		if cfg.TokenSecret == "" && cfg.TokenSecretFile != "" {
+			var err error
+
+			cfg.TokenSecret, err = readValueFromFile(cfg.TokenSecretFile)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		pxClient, err := newProxmoxClient(cfg, "", options...)
+		if err != nil {
+			return nil, err
+		}
+
+		clients[cfg.Region] = pxClient
+		configs[cfg.Region] = cfg
 	}
 
-	return nil, ErrClustersNotFound
+	return &ProxmoxPool{
+		clients: clients,
+		configs: configs,
+	}, nil
+}
+
+// newProxmoxClient builds a Proxmox API client for the given cluster config.
+// When authHeader is non-empty it is passed through verbatim as the request
+// Authorization header, taking precedence over cloud-config credentials.
+func newProxmoxClient(cfg *ProxmoxCluster, authHeader string, options ...proxmox.Option) (*goproxmox.APIClient, error) {
+	opts := []proxmox.Option{proxmox.WithUserAgent("ProxmoxMCP/1.0")}
+	opts = append(opts, options...)
+
+	transport := http.DefaultTransport
+
+	if cfg.Insecure {
+		transport = &http.Transport{
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: true,
+				MinVersion:         tls.VersionTLS12,
+			},
+		}
+	}
+
+	if authHeader != "" {
+		transport = &authHeaderTransport{base: transport, header: authHeader}
+	}
+
+	opts = append(opts, proxmox.WithHTTPClient(&http.Client{Transport: transport}))
+
+	// Only configure cloud-config credentials when no per-request auth header
+	// was provided. This lets clusters be configured without credentials and
+	// still be usable when the client supplies its own token.
+	if authHeader == "" {
+		if cfg.Username != "" && cfg.Password != "" {
+			opts = append(opts, proxmox.WithCredentials(&proxmox.Credentials{
+				Username: cfg.Username,
+				Password: cfg.Password,
+			}))
+		} else if cfg.TokenID != "" && cfg.TokenSecret != "" {
+			opts = append(opts, proxmox.WithAPIToken(cfg.TokenID, cfg.TokenSecret))
+		}
+	}
+
+	return goproxmox.NewAPIClient(cfg.URL, opts...)
+}
+
+// authHeaderTransport injects a fixed Authorization header into every request
+// before delegating to the underlying RoundTripper. It is used to pass a
+// client-supplied Proxmox API token through to the Proxmox API unchanged.
+type authHeaderTransport struct {
+	base   http.RoundTripper
+	header string
+}
+
+// RoundTrip implements http.RoundTripper.
+func (t *authHeaderTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	req.Header.Set("Authorization", t.header)
+
+	return t.base.RoundTrip(req)
 }
 
 // GetRegions returns supported regions.
@@ -155,9 +191,27 @@ func (c *ProxmoxPool) GetProxmoxCluster(region string) (*goproxmox.APIClient, er
 	return nil, ErrRegionNotFound
 }
 
+// GetProxmoxClusterWithToken returns a Proxmox cluster client for the given
+// region. When authHeader is non-empty, a client is built that passes the
+// header through to the Proxmox API verbatim; otherwise the pre-configured
+// cloud-config client is returned.
+func (c *ProxmoxPool) GetProxmoxClusterWithToken(region, authHeader string) (*goproxmox.APIClient, error) {
+	if authHeader == "" {
+		return c.GetProxmoxCluster(region)
+	}
+
+	cfg, ok := c.configs[region]
+	if !ok {
+		return nil, ErrRegionNotFound
+	}
+
+	return newProxmoxClient(cfg, authHeader)
+}
+
 // GetClusterVersion returns the Proxmox version of the cluster in the given region.
-func (c *ProxmoxPool) GetClusterVersion(ctx context.Context, region string) (string, error) {
-	client, err := c.GetProxmoxCluster(region)
+// The optional authHeader is passed through to the Proxmox API when non-empty.
+func (c *ProxmoxPool) GetClusterVersion(ctx context.Context, region, authHeader string) (string, error) {
+	client, err := c.GetProxmoxClusterWithToken(region, authHeader)
 	if err != nil {
 		return "", err
 	}
