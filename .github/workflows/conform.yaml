@@ -1,0 +1,26 @@
+name: Conformance check
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  conform:
+    name: Conformance
+    timeout-minutes: 5
+    runs-on: ubuntu-24.04
+    if: github.event.pull_request.draft == false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Checkout main branch
+        run: git fetch --no-tags origin main:main
+
+      - name: Conform action
+        uses: talos-systems/conform@cfdb3cce90daece912e6a5cb3f20b2316a78a5bf # v0.1.0-alpha.31
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}

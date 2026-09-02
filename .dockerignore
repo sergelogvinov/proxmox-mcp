@@ -1,0 +1,18 @@
+.vscode/
+.github/
+.git/
+**/.gitignore
+#
+bin/
+dist/
+bundle/
+hack/
+docs/
+Dockerfile
+
+# other
+*.md
+*.yml
+*.zip
+*.sql
+*.mcpb
