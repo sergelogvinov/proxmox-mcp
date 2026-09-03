@@ -38,8 +38,8 @@ const shutdownTimeout = 5 * time.Second
 func newServerCmd(flags *Flags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "server",
-		Short: "Run MCP server over HTTP/SSE",
-		Long:  "Run MCP server over HTTP/SSE. Streamable HTTP is served on /mcp, legacy SSE on /sse.",
+		Short: "Run MCP server over streamable HTTP",
+		Long:  "Run MCP server over streamable HTTP is served on /mcp",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			return runServer(cmd.Context(), flags)
 		},

@@ -104,7 +104,7 @@ func newProxmoxClient(cfg *ProxmoxCluster, authHeader string, options ...proxmox
 	if cfg.Insecure {
 		transport = &http.Transport{
 			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: true,
+				InsecureSkipVerify: cfg.Insecure,
 				MinVersion:         tls.VersionTLS12,
 			},
 		}
@@ -120,12 +120,13 @@ func newProxmoxClient(cfg *ProxmoxCluster, authHeader string, options ...proxmox
 	// was provided. This lets clusters be configured without credentials and
 	// still be usable when the client supplies its own token.
 	if authHeader == "" {
-		if cfg.Username != "" && cfg.Password != "" {
+		switch {
+		case cfg.Username != "" && cfg.Password != "":
 			opts = append(opts, proxmox.WithCredentials(&proxmox.Credentials{
 				Username: cfg.Username,
 				Password: cfg.Password,
 			}))
-		} else if cfg.TokenID != "" && cfg.TokenSecret != "" {
+		case cfg.TokenID != "" && cfg.TokenSecret != "":
 			opts = append(opts, proxmox.WithAPIToken(cfg.TokenID, cfg.TokenSecret))
 		}
 	}
@@ -157,29 +158,6 @@ func (c *ProxmoxPool) GetRegions() []string {
 	}
 
 	return regions
-}
-
-// CheckClusters checks if the Proxmox connection is working.
-func (c *ProxmoxPool) CheckClusters(ctx context.Context) error {
-	for region, pxClient := range c.clients {
-		_, err := pxClient.Version(ctx)
-		if err != nil {
-			return fmt.Errorf("failed to initialized proxmox client in region %s, error: %v", region, err)
-		}
-
-		pxCluster, err := pxClient.Cluster(ctx)
-		if err != nil {
-			return fmt.Errorf("failed to get cluster info in region %s, error: %v", region, err)
-		}
-
-		// Check if we can have permission to list VMs
-		_, err = pxCluster.Resources(ctx, "vm")
-		if err != nil {
-			return fmt.Errorf("failed to get list of VMs in region %s, error: %v", region, err)
-		}
-	}
-
-	return nil
 }
 
 // GetProxmoxCluster returns a Proxmox cluster client in a given region.

@@ -65,6 +65,7 @@ func runMCP(ctx context.Context, f *Flags) error {
 
 	log.Info("server config",
 		"allowDestructive", cfg.AllowDestructive,
+		"extensions", cfg.Extensions,
 	)
 
 	srv := mcp.NewServer(&mcp.Implementation{

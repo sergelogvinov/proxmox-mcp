@@ -111,8 +111,4 @@ func TestCheckClusters(t *testing.T) {
 	pxapi, err = pxClient.GetProxmoxCluster("cluster-1")
 	assert.Nil(t, err)
 	assert.NotNil(t, pxapi)
-
-	err = pxClient.CheckClusters(t.Context())
-	assert.NotNil(t, err)
-	assert.Contains(t, err.Error(), "failed to initialized proxmox client in region")
 }

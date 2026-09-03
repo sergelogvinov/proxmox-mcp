@@ -20,17 +20,18 @@ import (
 	"context"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
+	"github.com/sergelogvinov/proxmox-mcp/pkg/formatter"
 )
 
 // ClustersDescribeResult is the structured output of the proxmox_clusters_describe tool.
 type ClustersDescribeResult struct {
-	Region  string `json:"region" jsonschema:"Cluster name (region)"`
+	Cluster string `json:"cluster" jsonschema:"Cluster name (see proxmox_clusters_list)"`
 	Version string `json:"version" jsonschema:"Proxmox version of the cluster"`
 }
 
 // clustersDescribeInput is the input of the proxmox_clusters_describe tool.
 type clustersDescribeInput struct {
-	Region string `json:"region" jsonschema:"Cluster name (region)"`
+	Cluster string `json:"cluster" jsonschema:"Cluster name (region)"`
 }
 
 // RegisterClustersDescribe registers the clusters describe tool.
@@ -50,12 +51,16 @@ func (t *ProxmoxTools) RegisterClustersDescribe(srv *mcp.Server) {
 }
 
 func (t *ProxmoxTools) handlerClustersDescribe(ctx context.Context, req *mcp.CallToolRequest, input clustersDescribeInput) (*mcp.CallToolResult, any, error) {
-	result, err := t.ClustersDescribe(ctx, input.Region, authorizationHeader(req))
+	result, err := t.ClustersDescribe(ctx, input.Cluster, authorizationHeader(req))
 	if err != nil {
 		return nil, ClustersDescribeResult{}, err
 	}
 
-	return &mcp.CallToolResult{}, *result, nil
+	return &mcp.CallToolResult{
+		Content: []mcp.Content{
+			&mcp.TextContent{Text: formatter.ToText(result)},
+		},
+	}, *result, nil
 }
 
 // ClustersDescribe returns details of the Proxmox cluster in the given region.
@@ -66,7 +71,7 @@ func (t *ProxmoxTools) ClustersDescribe(ctx context.Context, region, authHeader 
 	}
 
 	return &ClustersDescribeResult{
-		Region:  region,
+		Cluster: region,
 		Version: version,
 	}, nil
 }

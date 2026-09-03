@@ -117,15 +117,11 @@ func listTools(ctx context.Context, srv *mcp.Server, format OutputFormat) error 
 		return err
 	}
 
-	if format == OutputText {
-		for _, tool := range toolList {
-			fmt.Printf("%s\t%s\n", tool.Name, tool.Description)
-		}
-
-		return nil
+	for _, tool := range toolList {
+		fmt.Printf("%s\t\t%s\n", tool.Name, tool.Description)
 	}
 
-	return printEncoded(toolList, format)
+	return nil
 }
 
 // callTool invokes a single tool and prints its result.
@@ -139,43 +135,24 @@ func callTool(ctx context.Context, svc *mcp.Server, name string, args map[string
 		return fmt.Errorf("tool %s failed: %s", name, strings.Join(result.Content, " "))
 	}
 
-	if format == OutputText {
+	switch format { //nolint:exhaustive
+	case OutputJSON:
+		data, err := json.MarshalIndent(result.Structured, "", "  ")
+		if err != nil {
+			return err
+		}
+		fmt.Println(string(data))
+	case OutputYAML:
+		data, err := yaml.Marshal(result.Structured)
+		if err != nil {
+			return err
+		}
+		fmt.Println(string(data))
+	default:
 		for _, content := range result.Content {
 			fmt.Println(content)
 		}
-
-		return nil
 	}
-
-	value := result.Structured
-	if value == nil {
-		value = result.Content
-	}
-
-	return printEncoded(value, format)
-}
-
-// printEncoded prints a value as JSON or YAML.
-func printEncoded(value any, format OutputFormat) error {
-	var (
-		data []byte
-		err  error
-	)
-
-	switch format { //nolint:exhaustive
-	case OutputJSON:
-		data, err = json.MarshalIndent(value, "", "  ")
-	case OutputYAML:
-		data, err = yaml.Marshal(value)
-	default:
-		return fmt.Errorf("unsupported output format %q", format)
-	}
-
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(data))
 
 	return nil
 }

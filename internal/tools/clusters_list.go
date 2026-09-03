@@ -21,6 +21,7 @@ import (
 	"slices"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
+	"github.com/sergelogvinov/proxmox-mcp/pkg/formatter"
 )
 
 // ClustersListResult is the structured output of the proxmox_clusters_list tool.
@@ -54,5 +55,9 @@ func (t *ProxmoxTools) handlerClustersList(_ context.Context, _ *mcp.CallToolReq
 		Count:    len(clusters),
 	}
 
-	return &mcp.CallToolResult{}, *result, nil
+	return &mcp.CallToolResult{
+		Content: []mcp.Content{
+			&mcp.TextContent{Text: formatter.ToText(result)},
+		},
+	}, *result, nil
 }
