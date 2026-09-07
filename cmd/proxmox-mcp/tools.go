@@ -90,14 +90,14 @@ func runTools(ctx context.Context, f *Flags, args []string) error {
 	}
 
 	srv := mcp.NewServer(&mcp.Implementation{
-		Name:    "proxmox-mcp",
+		Name:    bin,
 		Version: version,
 	}, nil)
 
 	tools.NewProxmoxTools(pool).RegisterTools(srv)
 
 	if len(args) == 0 {
-		return listTools(ctx, srv, OutputFormat(f.Output))
+		return listTools(ctx, srv)
 	}
 
 	toolName := args[0]
@@ -111,7 +111,7 @@ func runTools(ctx context.Context, f *Flags, args []string) error {
 }
 
 // listTools prints the tools registered on the server.
-func listTools(ctx context.Context, srv *mcp.Server, format OutputFormat) error {
+func listTools(ctx context.Context, srv *mcp.Server) error {
 	toolList, err := server.ListTools(ctx, srv)
 	if err != nil {
 		return err

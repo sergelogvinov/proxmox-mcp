@@ -106,7 +106,7 @@ func TestCheckClusters(t *testing.T) {
 	pxapi, err := pxClient.GetProxmoxCluster("test")
 	assert.NotNil(t, err)
 	assert.Nil(t, pxapi)
-	assert.Equal(t, pxpool.ErrRegionNotFound, err)
+	assert.Equal(t, pxpool.ErrClusterNotFound, err)
 
 	pxapi, err = pxClient.GetProxmoxCluster("cluster-1")
 	assert.Nil(t, err)

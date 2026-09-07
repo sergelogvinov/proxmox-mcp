@@ -36,6 +36,7 @@ import (
 var (
 	version = "dev"
 	commit  = "none"
+	bin     = "proxmox-mcp"
 )
 
 func main() {
@@ -68,7 +69,7 @@ func newRootCmd() *cobra.Command {
 	flags := DefaultFlags()
 
 	rootCmd := &cobra.Command{
-		Use:           "proxmox-mcp",
+		Use:           bin,
 		Short:         "Proxmox MCP Server - Proxmox tooling",
 		Long:          "Proxmox MCP Server provides Proxmox tooling via MCP protocol",
 		SilenceUsage:  true,

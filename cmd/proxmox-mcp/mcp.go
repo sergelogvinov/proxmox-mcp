@@ -69,7 +69,7 @@ func runMCP(ctx context.Context, f *Flags) error {
 	)
 
 	srv := mcp.NewServer(&mcp.Implementation{
-		Name:    "proxmox-mcp",
+		Name:    bin,
 		Version: version,
 	}, &mcp.ServerOptions{
 		Logger: log,

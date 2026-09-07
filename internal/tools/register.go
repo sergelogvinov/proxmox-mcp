@@ -17,6 +17,8 @@ limitations under the License.
 package tools
 
 import (
+	"strings"
+
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 	"github.com/sergelogvinov/proxmox-mcp/internal/proxmoxpool"
 )
@@ -37,12 +39,15 @@ func (t *ProxmoxTools) RegisterTools(srv *mcp.Server) {
 	t.RegisterClustersList(srv)
 }
 
-// authorizationHeader returns the Authorization header value from an MCP
-// tool request, or an empty string if there is none.
-func authorizationHeader(req *mcp.CallToolRequest) string {
+// authorizationToken returns the Authorization token value from an MCP
+// tool request, or an empty string if there is none. It specifically looks
+// for the "PVEAPIToken" prefix in the Authorization header.
+func authorizationToken(req *mcp.CallToolRequest) string {
 	if req == nil || req.Extra == nil {
 		return ""
 	}
 
-	return req.Extra.Header.Get("Authorization")
+	authToken, _ := strings.CutPrefix(req.Extra.Header.Get("Authorization"), "PVEAPIToken")
+	authToken = strings.TrimPrefix(authToken, "=")
+	return strings.TrimSpace(authToken)
 }

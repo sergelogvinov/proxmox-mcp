@@ -19,10 +19,8 @@ package proxmoxpool
 import "github.com/pkg/errors"
 
 var (
-	// ErrClustersNotFound is returned when a cluster is not found in the Proxmox
-	ErrClustersNotFound = errors.New("clusters not found")
-	// ErrHAGroupNotFound is returned when a ha-group is not found in the Proxmox
-	ErrHAGroupNotFound = errors.New("ha-group not found")
+	// ErrClusterNotFound is returned when a cluster is not found in the Proxmox
+	ErrClusterNotFound = errors.New("cluster not found")
 	// ErrRegionNotFound is returned when a region is not found in the Proxmox
 	ErrRegionNotFound = errors.New("region not found")
 	// ErrZoneNotFound is returned when a zone is not found in the Proxmox
