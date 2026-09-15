@@ -277,7 +277,7 @@ func collectColumns(t reflect.Type, strict bool) []column {
 
 // jsonName returns the JSON field name of f, falling back to the Go name.
 func jsonName(f reflect.StructField) string {
-	name := strings.Split(f.Tag.Get("json"), ",")[0]
+	name, _, _ := strings.Cut(f.Tag.Get("json"), ",")
 	if name == "" || name == "-" {
 		return f.Name
 	}
