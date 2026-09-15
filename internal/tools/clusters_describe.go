@@ -18,15 +18,22 @@ package tools
 
 import (
 	"context"
+	"fmt"
+	"slices"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
+	proxmoxcluster "github.com/sergelogvinov/go-proxmox-rest/cluster"
 	"github.com/sergelogvinov/proxmox-mcp/pkg/formatter"
 )
 
 // ClustersDescribeResult is the structured output of the proxmox_clusters_describe tool.
 type ClustersDescribeResult struct {
-	Cluster string `json:"cluster" jsonschema:"Cluster name (see proxmox_clusters_list)"`
-	Version string `json:"version" jsonschema:"Proxmox version of the cluster"`
+	Cluster       string   `json:"cluster" jsonschema:"Name of the cluster"`
+	Version       string   `json:"version" jsonschema:"Proxmox version"`
+	HAStatus      string   `json:"ha_status,omitempty" jsonschema:"High availability status of the cluster"`
+	NodeStatus    string   `json:"node_status" jsonschema:"Node counts in Ready/NotReady/Unknown"`
+	NodeResources string   `json:"node_resources" jsonschema:"Total resources in the cluster (CPU, Memory, Storage)"`
+	Nodes         []string `json:"nodes" jsonschema:"List of nodes"`
 }
 
 // clustersDescribeInput is the input of the proxmox_clusters_describe tool.
@@ -39,7 +46,7 @@ func (t *ProxmoxTools) RegisterClustersDescribe(srv *mcp.Server) {
 	mcp.AddTool(srv,
 		&mcp.Tool{
 			Name:        "proxmox_clusters_describe",
-			Description: "Describe a Proxmox cluster: returns the Proxmox version of the cluster in the given region.",
+			Description: "Describe a Proxmox cluster: returns its version, nodes, node statuses, and total node resources.",
 			Annotations: &mcp.ToolAnnotations{
 				IdempotentHint: true,
 				ReadOnlyHint:   true,
@@ -75,8 +82,58 @@ func (t *ProxmoxTools) ClustersDescribe(ctx context.Context, region, authToken s
 		return nil, err
 	}
 
+	resources, err := px.Cluster().Resources().Get(ctx, proxmoxcluster.ResourceTypeNode)
+	if err != nil {
+		return nil, err
+	}
+
+	nodes := make([]string, 0, len(resources))
+
+	var (
+		ready, notReady, unknown int
+		cpu                      int
+		memory, storage          int64
+		usedCPU                  float64
+		usedMemory, usedStorage  int64
+	)
+
+	for _, resource := range resources {
+		node := resource.Node
+		if node == "" {
+			node = resource.Name
+		}
+
+		if node != "" {
+			nodes = append(nodes, node)
+		}
+
+		cpu += resource.MaxCPU
+		usedCPU += resource.CPU
+		memory += resource.MaxMem / (1024 * 1024 * 1024)
+		usedMemory += resource.Mem / (1024 * 1024 * 1024)
+		storage += resource.MaxDisk / (1024 * 1024 * 1024)
+		usedStorage += resource.Disk / (1024 * 1024 * 1024)
+
+		switch resource.Status {
+		case "online":
+			ready++
+		case "stopped":
+			notReady++
+		default:
+			unknown++
+		}
+	}
+
+	slices.Sort(nodes)
+
+	nodeStatus := fmt.Sprintf("%d/%d/%d", ready, notReady, unknown)
+	nodeResources := fmt.Sprintf("cpu=%d (used=%.0f%%), memory=%dGiB (used=%dGiB), system storage=%dGiB (used=%dGiB)", cpu, usedCPU*100, memory, usedMemory, storage, usedStorage)
+
 	return &ClustersDescribeResult{
-		Cluster: region,
-		Version: version.Version,
+		Cluster:       region,
+		Version:       version.Version,
+		NodeStatus:    nodeStatus,
+		NodeResources: nodeResources,
+		Nodes:         nodes,
 	}, nil
 }
