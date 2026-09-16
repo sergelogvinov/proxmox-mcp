@@ -10,6 +10,13 @@ priorityClassName: system-cluster-critical
 autoscaling:
   enabled: true
 
+config:
+  clusters:
+    - region: homelab
+      url: https://pve.example.com:8006/api2/json
+      token_id: mcp@pve!reader
+      token_secret_file: /absolute/path/to/token-secret
+
 volumes:
   - name: foo
     secret:

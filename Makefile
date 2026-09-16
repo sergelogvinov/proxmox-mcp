@@ -139,7 +139,7 @@ docs:
 release-mcpb: ## Release MCPB bundle
 	@rm -rf $(BUNDLE_DIR)/server
 	@mkdir -p $(BUNDLE_DIR)/server
-	cp -r bin/default_$(OS)_$(ARCH)_*/bin/proxmox-mcp* $(BUNDLE_DIR)/server/
+	cp -r bin/default_$(OS)_$(ARCH)_*/proxmox-mcp* $(BUNDLE_DIR)/server/
 	jq --arg v "$(TAG)" --arg p "$(MCPB_OS)" '.version = $$v | .compatibility.platforms = [$$p]' manifest.json > $(BUNDLE_DIR)/manifest.json
 	npx @anthropic-ai/mcpb pack $(BUNDLE_DIR) proxmox-mcp_$(OS)_$(ARCH).mcpb
 

@@ -1,6 +1,6 @@
 # proxmox-mcp
 
-![Version: 0.0.1](https://img.shields.io/badge/Version-0.0.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.0.1](https://img.shields.io/badge/AppVersion-v0.0.1-informational?style=flat-square)
+![Version: 0.0.2](https://img.shields.io/badge/Version-0.0.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.1.0](https://img.shields.io/badge/AppVersion-v0.1.0-informational?style=flat-square)
 
 Proxmox MCP server for Kubernetes
 
@@ -16,6 +16,27 @@ Proxmox MCP server for Kubernetes
 
 * <https://github.com/sergelogvinov/proxmox-mcp>
 
+## Helm values
+
+```yaml
+# config.yaml
+
+config:
+  clusters:
+    - url: https://cluster-api-1.exmple.com:8006/api2/json
+      insecure: false
+      token_id: "proxmox-mcp@pve!mcp"
+      token_secret: "key"
+      region: cluster-1
+```
+
+## Deploy
+
+```shell
+helm upgrade -i --namespace=kube-system -f config.yaml \
+    proxmox-mcp oci://ghcr.io/sergelogvinov/charts/proxmox-mcp
+```
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -30,6 +51,7 @@ Proxmox MCP server for Kubernetes
 | args | list | `["--extensions=all","--allow-destructive","--log-level=info","--log-format=json"]` | Args for the container entrypoint |
 | env | list | `[]` | Environment variables |
 | envFrom | object | `{}` | Environment variables from ConfigMaps or Secrets |
+| config | object | `{}` | Cloud configuration for the application. |
 | serviceAccount | object | `{"annotations":{},"automount":true,"create":true,"name":""}` | Pods Service Account. ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/ |
 | podAnnotations | object | `{}` | Annotations for pod. ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/ |
 | podlabels | object | `{}` | Extra labels for pod. ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/ |

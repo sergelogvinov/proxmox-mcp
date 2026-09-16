@@ -1,0 +1,128 @@
+---
+# Source: proxmox-mcp/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: proxmox-mcp
+  labels:
+    helm.sh/chart: proxmox-mcp-0.0.2
+    app.kubernetes.io/name: proxmox-mcp
+    app.kubernetes.io/instance: proxmox-mcp
+    app.kubernetes.io/version: "v0.1.0"
+    app.kubernetes.io/managed-by: Helm
+automountServiceAccountToken: true
+
+---
+# Source: proxmox-mcp/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxmox-mcp
+  labels:
+    helm.sh/chart: proxmox-mcp-0.0.2
+    app.kubernetes.io/name: proxmox-mcp
+    app.kubernetes.io/instance: proxmox-mcp
+    app.kubernetes.io/version: "v0.1.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: proxmox-mcp
+    app.kubernetes.io/instance: proxmox-mcp
+
+---
+# Source: proxmox-mcp/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxmox-mcp
+  labels:
+    helm.sh/chart: proxmox-mcp-0.0.2
+    app.kubernetes.io/name: proxmox-mcp
+    app.kubernetes.io/instance: proxmox-mcp
+    app.kubernetes.io/version: "v0.1.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: proxmox-mcp
+      app.kubernetes.io/instance: proxmox-mcp
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: proxmox-mcp-0.0.2
+        app.kubernetes.io/name: proxmox-mcp
+        app.kubernetes.io/instance: proxmox-mcp
+        app.kubernetes.io/version: "v0.1.0"
+        app.kubernetes.io/managed-by: Helm
+    spec:
+      enableServiceLinks: false
+      serviceAccountName: proxmox-mcp
+      securityContext:
+        fsGroup: 65532
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 65532
+        runAsUser: 65532
+      containers:
+        - name: proxmox-mcp
+          securityContext:
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 65532
+          image: "ghcr.io/sergelogvinov/proxmox-mcp:v0.1.0"
+          imagePullPolicy: IfNotPresent
+          args:
+            - server
+            - --port=8080
+            - --config=/etc/proxmox/config.yaml
+            - --extensions=all
+            - --allow-destructive
+            - --log-level=info
+            - --log-format=json
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          volumeMounts:
+            - name: config
+              mountPath: /etc/proxmox
+              readOnly: false
+      volumes:
+        - name: config
+          secret:
+            secretName: proxmox-mcp
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: proxmox-mcp
+                    app.kubernetes.io/instance: proxmox-mcp
+                namespaces:
+                  - "mcps"
+                topologyKey: kubernetes.io/hostname
+              weight: 1
