@@ -34,9 +34,10 @@ import (
 )
 
 var (
-	version = "dev"
-	commit  = "none"
-	bin     = "proxmox-mcp"
+	version     = "dev"
+	commit      = "none"
+	bin         = "proxmox-mcp"
+	description = "Proxmox MCP server"
 )
 
 func main() {
