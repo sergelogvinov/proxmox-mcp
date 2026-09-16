@@ -71,8 +71,8 @@ func (t *ProxmoxTools) handlerEventsList(ctx context.Context, req *mcp.CallToolR
 	}, *result, nil
 }
 
-// EventsList returns recent task events from the Proxmox cluster in the given region.
-func (t *ProxmoxTools) EventsList(ctx context.Context, region string, limit int, authToken string) (*EventsListResult, error) {
+// EventsList returns recent task events from the Proxmox cluster in the given cluster.
+func (t *ProxmoxTools) EventsList(ctx context.Context, cluster string, limit int, authToken string) (*EventsListResult, error) {
 	if limit < 0 {
 		return nil, fmt.Errorf("limit must not be negative")
 	}
@@ -80,7 +80,7 @@ func (t *ProxmoxTools) EventsList(ctx context.Context, region string, limit int,
 		limit = defaultEventsLimit
 	}
 
-	px, err := t.pool.GetProxmoxClusterWithToken(region, authToken)
+	px, err := t.pool.GetProxmoxClusterWithToken(cluster, authToken)
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +115,7 @@ func (t *ProxmoxTools) EventsList(ctx context.Context, region string, limit int,
 	}
 
 	return &EventsListResult{
-		Cluster: region,
+		Cluster: cluster,
 		Count:   len(events),
 		Events:  events,
 	}, nil

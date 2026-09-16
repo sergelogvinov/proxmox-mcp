@@ -70,9 +70,9 @@ func (t *ProxmoxTools) handlerClustersDescribe(ctx context.Context, req *mcp.Cal
 	}, *result, nil
 }
 
-// ClustersDescribe returns details of the Proxmox cluster in the given region.
-func (t *ProxmoxTools) ClustersDescribe(ctx context.Context, region, authToken string) (*ClustersDescribeResult, error) {
-	px, err := t.pool.GetProxmoxClusterWithToken(region, authToken)
+// ClustersDescribe returns details of the Proxmox cluster in the given cluster.
+func (t *ProxmoxTools) ClustersDescribe(ctx context.Context, cluster, authToken string) (*ClustersDescribeResult, error) {
+	px, err := t.pool.GetProxmoxClusterWithToken(cluster, authToken)
 	if err != nil {
 		return nil, err
 	}
@@ -130,7 +130,7 @@ func (t *ProxmoxTools) ClustersDescribe(ctx context.Context, region, authToken s
 	nodeResources := fmt.Sprintf("cpu=%d (used=%.0f%%), memory=%dGiB (used=%dGiB), system storage=%dGiB (used=%dGiB)", cpu, usedCPU*100, memory, usedMemory, storage, usedStorage)
 
 	return &ClustersDescribeResult{
-		Cluster:       region,
+		Cluster:       cluster,
 		Version:       version.Version,
 		NodeStatus:    nodeStatus,
 		NodeResources: nodeResources,

@@ -26,7 +26,7 @@ import (
 
 // ClustersListResult is the structured output of the proxmox_clusters_list tool.
 type ClustersListResult struct {
-	Clusters []string `json:"clusters,omitempty" jsonschema:"Clusters names (regions)"`
+	Clusters []string `json:"clusters,omitempty" jsonschema:"Clusters names"`
 	Count    int      `json:"count" jsonschema:"Number of configured clusters"`
 }
 
@@ -35,7 +35,7 @@ func (t *ProxmoxTools) RegisterClustersList(srv *mcp.Server) {
 	mcp.AddTool(srv,
 		&mcp.Tool{
 			Name:        "proxmox_clusters_list",
-			Description: "List the Proxmox clusters (regions) configured in the MCP server.",
+			Description: "List the Proxmox clusters configured in the MCP server.",
 			Annotations: &mcp.ToolAnnotations{
 				IdempotentHint: true,
 				ReadOnlyHint:   true,

@@ -72,9 +72,9 @@ func (t *ProxmoxTools) handlerNodesDescribe(ctx context.Context, req *mcp.CallTo
 	}, *result, nil
 }
 
-// NodesDescribe returns details of a node in the Proxmox cluster in the given region.
-func (t *ProxmoxTools) NodesDescribe(ctx context.Context, region, node, authToken string) (*NodesDescribeResult, error) {
-	px, err := t.pool.GetProxmoxClusterWithToken(region, authToken)
+// NodesDescribe returns details of a node in the Proxmox cluster in the given cluster.
+func (t *ProxmoxTools) NodesDescribe(ctx context.Context, cluster, node, authToken string) (*NodesDescribeResult, error) {
+	px, err := t.pool.GetProxmoxClusterWithToken(cluster, authToken)
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +108,7 @@ func (t *ProxmoxTools) NodesDescribe(ctx context.Context, region, node, authToke
 	}
 
 	result := &NodesDescribeResult{
-		Cluster:   region,
+		Cluster:   cluster,
 		Name:      node,
 		Status:    summary.Status,
 		Resources: summary.Resources,
