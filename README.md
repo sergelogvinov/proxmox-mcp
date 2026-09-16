@@ -12,9 +12,8 @@ Kubernetes clusters.
 The Proxmox MCP Server does not replace these tools. It gives AI assistants
 and automation agents access to information about your Proxmox clusters.
 
-The current tools are read-only. You can use them to inspect the current
-state, understand the configuration, and collect information for
-troubleshooting.
+The default tools are read-only. Optional action tools can be enabled with
+`--allow-destructive` for operations such as backups and reboots.
 
 Instead of checking many pages in the Proxmox UI or running several commands,
 you can ask an AI assistant to collect and analyze the required information.
@@ -44,11 +43,15 @@ The MCP server provides the following read-only tools:
 | --- | --- | --- |
 | `proxmox_clusters_list` | None | List the configured Proxmox clusters. |
 | `proxmox_clusters_describe` | `cluster` | Show a cluster's version, nodes, node statuses, and total resources. |
+| `proxmox_containers_list` | `cluster` | List LXC containers with their status and resource usage. |
+| `proxmox_containers_describe` | `cluster`, `vmid`, `node` (optional) | Show an LXC container's current status and runtime network interfaces when it is running. |
 | `proxmox_events_list` | `cluster`, `limit` (optional) | List recent task events across all nodes. The default limit is `10`. |
 | `proxmox_nodes_list` | `cluster` | List nodes with their status and resource usage. |
 | `proxmox_nodes_describe` | `cluster`, `node` | Show a node's status, resources, uptime, version, kernel, and boot information. |
 | `proxmox_storage_list` | `cluster` | List storage resources with their status, type, content, and capacity usage. |
 | `proxmox_storage_describe` | `cluster`, `name`, `node` (optional) | Show storage details and, when a node is provided, content visible on that node. |
+| `proxmox_vms_list` | `cluster` | List QEMU virtual machines with their status and resource usage. |
+| `proxmox_vms_describe` | `cluster`, `vmid`, `node` (optional) | Show a QEMU virtual machine's current status and guest network interfaces when its QEMU guest agent is responding. |
 
 Use `proxmox_clusters_list` first to find the cluster names used by the other
 tools. MCP clients can discover the full input and output schemas. You can
@@ -57,6 +60,12 @@ also list the tools from the command line:
 ```sh
 proxmox-mcp tools --config /absolute/path/to/cluster-config.yaml
 ```
+
+When `--allow-destructive` is enabled, `proxmox_vms_backup` and
+`proxmox_containers_backup` accept `cluster`, `vmid`, optional `node`,
+`storage`, `mode`, and `compress` arguments. They start an asynchronous backup
+and return its Proxmox task identifier; task creation does not mean that the
+backup has already completed successfully.
 
 ## Installation
 

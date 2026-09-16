@@ -38,16 +38,20 @@ func NewProxmoxTools(pool *proxmoxpool.ProxmoxPool, allowDestructive bool) *Prox
 func (t *ProxmoxTools) RegisterTools(srv *mcp.Server) {
 	t.RegisterClustersDescribe(srv)
 	t.RegisterClustersList(srv)
+	t.RegisterContainersDescribe(srv)
 	t.RegisterContainersList(srv)
 	t.RegisterEventsList(srv)
 	t.RegisterNodesDescribe(srv)
 	t.RegisterNodesList(srv)
 	t.RegisterStorageDescribe(srv)
 	t.RegisterStorageList(srv)
+	t.RegisterVMsDescribe(srv)
 	t.RegisterVMsList(srv)
 
 	if t.allowDestructive {
+		t.RegisterContainersBackup(srv)
 		t.RegisterContainersReboot(srv)
+		t.RegisterVMsBackup(srv)
 		t.RegisterVMsReboot(srv)
 	}
 }

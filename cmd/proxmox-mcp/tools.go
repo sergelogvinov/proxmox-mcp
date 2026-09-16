@@ -20,6 +20,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
@@ -163,6 +164,7 @@ func callTool(ctx context.Context, svc *mcp.Server, name string, args map[string
 // Values may contain '='; we split on the first '=' only.
 // A bare token without '=' is an error (suggest quoting).
 // key= means empty string value.
+// Integer values are converted to int; all other values remain strings.
 func parseArguments(args []string) (map[string]any, error) {
 	result := make(map[string]any)
 
@@ -180,7 +182,11 @@ func parseArguments(args []string) (map[string]any, error) {
 			return nil, fmt.Errorf("argument %q has empty key", arg)
 		}
 
-		result[key] = value
+		if intValue, err := strconv.Atoi(value); err == nil {
+			result[key] = intValue
+		} else {
+			result[key] = value
+		}
 	}
 
 	return result, nil

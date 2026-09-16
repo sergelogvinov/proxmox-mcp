@@ -55,6 +55,13 @@ type GuestSummary struct {
 	Resources string   `json:"resources" jsonschema:"Resources (CPU, Memory, Disk)"`
 }
 
+// GuestNetworkInterface contains runtime network information for a guest.
+type GuestNetworkInterface struct {
+	Name            string   `json:"name" jsonschema:"Interface name"`
+	HardwareAddress string   `json:"hardware_address,omitempty" jsonschema:"Hardware address"`
+	IPAddresses     []string `json:"ip_addresses,omitempty" jsonschema:"IP addresses in CIDR notation"`
+}
+
 // EventSummary contains details of a Proxmox task event.
 type EventSummary struct {
 	Node      string `json:"node" jsonschema:"Node name"`
