@@ -25,26 +25,6 @@ import (
 	"github.com/sergelogvinov/proxmox-mcp/pkg/formatter"
 )
 
-// NodeVersion contains the Proxmox VE version installed on a node.
-type NodeVersion struct {
-	Release string `json:"release" jsonschema:"Proxmox VE release"`
-	Version string `json:"version" jsonschema:"Installed pve-manager version"`
-}
-
-// NodeCurrentKernel contains details about the kernel running on a node.
-type NodeCurrentKernel struct {
-	Sysname string `json:"sysname" jsonschema:"Operating system name"`
-	Release string `json:"release" jsonschema:"Kernel release"`
-	Version string `json:"version" jsonschema:"Kernel build version"`
-	Machine string `json:"machine" jsonschema:"Machine architecture"`
-}
-
-// NodeBootInfo contains details about how a node booted.
-type NodeBootInfo struct {
-	Mode       string `json:"mode" jsonschema:"Firmware boot mode"`
-	SecureBoot bool   `json:"secure_boot" jsonschema:"Whether EFI Secure Boot is enabled"`
-}
-
 // NodesDescribeResult is the structured output of the proxmox_nodes_describe tool.
 type NodesDescribeResult struct {
 	Cluster       string            `json:"cluster" jsonschema:"Name of the cluster"`
@@ -59,7 +39,7 @@ type NodesDescribeResult struct {
 
 // nodesDescribeInput is the input of the proxmox_nodes_describe tool.
 type nodesDescribeInput struct {
-	Cluster string `json:"cluster" jsonschema:"Cluster name (region)"`
+	Cluster string `json:"cluster" jsonschema:"Cluster name"`
 	Node    string `json:"node" jsonschema:"Node name"`
 }
 

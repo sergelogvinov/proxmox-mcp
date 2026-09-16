@@ -27,13 +27,6 @@ import (
 	"github.com/sergelogvinov/proxmox-mcp/pkg/formatter"
 )
 
-// NodeSummary contains the status and resource usage of a Proxmox node.
-type NodeSummary struct {
-	Name      string `json:"name" jsonschema:"Node name"`
-	Status    string `json:"status" jsonschema:"Node status"`
-	Resources string `json:"resources" jsonschema:"Node resources (CPU, Memory, Storage)"`
-}
-
 // NodesListResult is the structured output of the proxmox_nodes_list tool.
 type NodesListResult struct {
 	Cluster string        `json:"cluster" jsonschema:"Name of the cluster"`
@@ -43,7 +36,7 @@ type NodesListResult struct {
 
 // nodesListInput is the input of the proxmox_nodes_list tool.
 type nodesListInput struct {
-	Cluster string `json:"cluster" jsonschema:"Cluster name (region)"`
+	Cluster string `json:"cluster" jsonschema:"Cluster name"`
 }
 
 // RegisterNodesList registers the nodes list tool.

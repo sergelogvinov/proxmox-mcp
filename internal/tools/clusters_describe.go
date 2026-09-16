@@ -38,7 +38,7 @@ type ClustersDescribeResult struct {
 
 // clustersDescribeInput is the input of the proxmox_clusters_describe tool.
 type clustersDescribeInput struct {
-	Cluster string `json:"cluster" jsonschema:"Cluster name (region)"`
+	Cluster string `json:"cluster" jsonschema:"Cluster name"`
 }
 
 // RegisterClustersDescribe registers the clusters describe tool.

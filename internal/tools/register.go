@@ -40,6 +40,8 @@ func (t *ProxmoxTools) RegisterTools(srv *mcp.Server) {
 	t.RegisterEventsList(srv)
 	t.RegisterNodesDescribe(srv)
 	t.RegisterNodesList(srv)
+	t.RegisterStorageDescribe(srv)
+	t.RegisterStorageList(srv)
 }
 
 // authorizationToken returns the Authorization token value from an MCP

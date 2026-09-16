@@ -29,16 +29,6 @@ import (
 
 const defaultEventsLimit = 10
 
-// EventSummary contains details of a Proxmox task event.
-type EventSummary struct {
-	Node      string `json:"node" jsonschema:"Node name"`
-	Type      string `json:"type" jsonschema:"Task type"`
-	User      string `json:"user" jsonschema:"User that started the task"`
-	StartTime string `json:"start_time" jsonschema:"Task start time"`
-	Duration  string `json:"duration,omitempty" jsonschema:"Task duration"`
-	Status    string `json:"status" jsonschema:"Task status"`
-}
-
 // EventsListResult is the structured output of the proxmox_events_list tool.
 type EventsListResult struct {
 	Cluster string         `json:"cluster" jsonschema:"Name of the cluster"`
