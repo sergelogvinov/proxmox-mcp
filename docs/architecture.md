@@ -57,14 +57,13 @@ Virtual Machine Management:
 - proxmox_vms_list
 - proxmox_vms_describe
 - proxmox_vms_backup
-- proxmox_vms_restore
 - proxmox_vms_reboot
 
 Container Management:
 - proxmox_containers_list
 - proxmox_containers_describe
 - proxmox_containers_backup
-- proxmox_containers_restore
+- proxmox_containers_reboot
 
 Storage Management:
 - proxmox_storage_list

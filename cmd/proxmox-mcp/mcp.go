@@ -78,7 +78,7 @@ func runMCP(ctx context.Context, f *Flags) error {
 	})
 	srv.AddReceivingMiddleware(loggingMiddleware)
 
-	tools.NewProxmoxTools(pool).RegisterTools(srv)
+	tools.NewProxmoxTools(pool, cfg.AllowDestructive).RegisterTools(srv)
 
 	return srv.Run(logger.Inject(ctx, log), &mcp.StdioTransport{})
 }

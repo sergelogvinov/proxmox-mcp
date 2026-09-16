@@ -25,12 +25,13 @@ import (
 
 // ProxmoxTools provides tool handlers with access to the Proxmox cluster pool.
 type ProxmoxTools struct {
-	pool *proxmoxpool.ProxmoxPool
+	pool             *proxmoxpool.ProxmoxPool
+	allowDestructive bool
 }
 
 // NewProxmoxTools creates tool handlers backed by the given Proxmox cluster pool.
-func NewProxmoxTools(pool *proxmoxpool.ProxmoxPool) *ProxmoxTools {
-	return &ProxmoxTools{pool: pool}
+func NewProxmoxTools(pool *proxmoxpool.ProxmoxPool, allowDestructive bool) *ProxmoxTools {
+	return &ProxmoxTools{pool: pool, allowDestructive: allowDestructive}
 }
 
 // RegisterTools registers all proxmox-mcp tools on the MCP server.
@@ -44,6 +45,11 @@ func (t *ProxmoxTools) RegisterTools(srv *mcp.Server) {
 	t.RegisterStorageDescribe(srv)
 	t.RegisterStorageList(srv)
 	t.RegisterVMsList(srv)
+
+	if t.allowDestructive {
+		t.RegisterContainersReboot(srv)
+		t.RegisterVMsReboot(srv)
+	}
 }
 
 // authorizationToken returns the Authorization token value from an MCP

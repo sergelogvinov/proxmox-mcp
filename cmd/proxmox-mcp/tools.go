@@ -96,7 +96,7 @@ func runTools(ctx context.Context, f *Flags, args []string) error {
 		Version:     version,
 	}, nil)
 
-	tools.NewProxmoxTools(pool).RegisterTools(srv)
+	tools.NewProxmoxTools(pool, cfg.AllowDestructive).RegisterTools(srv)
 
 	if len(args) == 0 {
 		return listTools(ctx, srv)

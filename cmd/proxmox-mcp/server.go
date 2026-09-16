@@ -88,7 +88,7 @@ func runServer(ctx context.Context, f *Flags) error {
 	})
 	srv.AddReceivingMiddleware(loggingMiddleware)
 
-	tools.NewProxmoxTools(pool).RegisterTools(srv)
+	tools.NewProxmoxTools(pool, cfg.AllowDestructive).RegisterTools(srv)
 
 	mux := http.NewServeMux()
 	mux.Handle("/mcp", mcp.NewStreamableHTTPHandler(func(*http.Request) *mcp.Server { return srv }, nil))
