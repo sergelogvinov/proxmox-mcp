@@ -51,6 +51,7 @@ spec:
           args:
             - server
             - --port=8080
+            - --config=/etc/proxmox/config.yaml
           {{- with .Values.args }}
             {{- . | toYaml | nindent 12 }}
           {{- end }}
@@ -78,12 +79,18 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.volumeMounts }}
           volumeMounts:
+            - name: config
+              mountPath: /etc/proxmox
+              readOnly: false
+          {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
-      {{- with .Values.volumes }}
       volumes:
+        - name: config
+          secret:
+            secretName: {{ include "proxmox-mcp.fullname" . }}
+      {{- with .Values.volumes }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.nodeSelector }}

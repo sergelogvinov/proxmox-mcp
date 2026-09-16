@@ -6,7 +6,7 @@ dist: bin
 builds:
   - id: default
     main: ./cmd/proxmox-mcp
-    binary: bin/proxmox-mcp
+    binary: proxmox-mcp
     env:
       - CGO_ENABLED=0
     flags:
@@ -93,8 +93,7 @@ dockers_v2:
     images:
       - "ghcr.io/sergelogvinov/{{ .ProjectName }}"
     tags:
-      - "v{{.Version}}"
-      - "{{ if not .IsNightly }}latest{{ end }}"
+      - "{{ if not .IsSnapshot }}v{{.Version}}{{ else }}edge{{ end }}"
     platforms:
       - linux/amd64
       - linux/arm64

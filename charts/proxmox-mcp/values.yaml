@@ -40,6 +40,14 @@ envFrom: {}
   # - secretRef:
   #     name: secret-name
 
+# -- Cloud configuration for the application.
+config: {}
+  # clusters:
+  #   - region: homelab
+  #     url: https://pve.example.com:8006/api2/json
+  #     token_id: mcp@pve!reader
+  #     token_secret_file: /absolute/path/to/token-secret
+
 # -- Pods Service Account.
 # ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
 serviceAccount:

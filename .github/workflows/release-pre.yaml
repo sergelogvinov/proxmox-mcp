@@ -21,14 +21,18 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Release version
-        if: startsWith(github.head_ref, 'release-please')
-        run: jq -r '"TAG=v"+.[]' .github/release-please-manifest.json >> "$GITHUB_ENV"
-
+      - name: Install Helm
+        uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
+        with:
+          version: v4.3.0
       - name: Helm docs
         uses: gabe565/setup-helm-docs-action@d5c35bdc9133cfbea3b671acadf50a29029e87c2 # v1.0.4
         with:
           version: v1.14.2
+
+      - name: Release version
+        if: startsWith(github.head_ref, 'release-please')
+        run: jq -r '"TAG=v"+.[]' .github/release-please-manifest.json >> "$GITHUB_ENV"
 
       - name: Generate
         run: make docs

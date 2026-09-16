@@ -34,6 +34,6 @@ FROM --platform=${TARGETARCH} scratch AS release
 
 COPY --from=gcr.io/distroless/static-debian13:nonroot . .
 ARG TARGETPLATFORM
-COPY ${TARGETPLATFORM}/bin/proxmox-mcp /bin/proxmox-mcp
+COPY ${TARGETPLATFORM}/proxmox-mcp /bin/proxmox-mcp
 
 ENTRYPOINT ["/bin/proxmox-mcp"]
