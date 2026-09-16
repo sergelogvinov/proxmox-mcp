@@ -43,6 +43,18 @@ type NodeSummary struct {
 	Resources string `json:"resources" jsonschema:"Node resources (CPU, Memory, Storage)"`
 }
 
+// GuestSummary contains the status and resource usage of a virtual machine or container.
+type GuestSummary struct {
+	VMID      int      `json:"vmid" jsonschema:"ID"`
+	Name      string   `json:"name" jsonschema:"Name"`
+	Node      string   `json:"node" jsonschema:"Node"`
+	Status    string   `json:"status" jsonschema:"Status"`
+	Template  bool     `json:"template" jsonschema:"Template"`
+	Tags      []string `json:"tags,omitempty" jsonschema:"Tags"`
+	Uptime    string   `json:"uptime,omitempty" jsonschema:"Uptime"`
+	Resources string   `json:"resources" jsonschema:"Resources (CPU, Memory, Disk)"`
+}
+
 // EventSummary contains details of a Proxmox task event.
 type EventSummary struct {
 	Node      string `json:"node" jsonschema:"Node name"`

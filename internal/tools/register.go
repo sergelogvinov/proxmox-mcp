@@ -37,11 +37,13 @@ func NewProxmoxTools(pool *proxmoxpool.ProxmoxPool) *ProxmoxTools {
 func (t *ProxmoxTools) RegisterTools(srv *mcp.Server) {
 	t.RegisterClustersDescribe(srv)
 	t.RegisterClustersList(srv)
+	t.RegisterContainersList(srv)
 	t.RegisterEventsList(srv)
 	t.RegisterNodesDescribe(srv)
 	t.RegisterNodesList(srv)
 	t.RegisterStorageDescribe(srv)
 	t.RegisterStorageList(srv)
+	t.RegisterVMsList(srv)
 }
 
 // authorizationToken returns the Authorization token value from an MCP

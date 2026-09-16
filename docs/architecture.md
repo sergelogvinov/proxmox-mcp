@@ -2,11 +2,6 @@
 
 ## Go-based Local Daemon with stdio + SSE, Typed Structured Output for Every Tool
 
-Use libraries:
-- https://github.com/modelcontextprotocol/go-sdk
-- https://github.com/sergelogvinov/go-proxmox
-- https://github.com/luthermonson/go-proxmox
-
 MCP server will implement basic tools to make simple interactions with Proxmox easier and more structured.
 Most of the tools are safe to use and to not cause any unintended side effects.
 
@@ -79,33 +74,6 @@ Backup Management:
 - proxmox_backups_list
 - proxmox_backups_describe
 
-## Repository struct
-
-A single `Repository` is the access point for every tool. It owns the multi-cluster
-pool of Proxmox clients, keyed by the configured `region` (cluster name), and hides
-the transport/authorization details from the tool layer.
-
-### Config types
-
-```go
-// Config is the top-level MCP server configuration (multi-cluster).
-type Config struct {
-    Clusters []Cluster `yaml:"clusters"`
-}
-
-// Cluster describes a single Proxmox cluster endpoint and its credentials.
-type Cluster struct {
-    URL             string `yaml:"url"`
-    CAFile          string `yaml:"ca_file"`
-    Insecure        bool   `yaml:"insecure"`
-    TokenID         string `yaml:"token_id"`
-    TokenIDFile     string `yaml:"token_id_file"`
-    TokenSecret     string `yaml:"token_secret"`
-    TokenSecretFile string `yaml:"token_secret_file"`
-    Region          string `yaml:"region"`
-}
-```
-
 ## Architecture overview
 
 ```
@@ -172,12 +140,3 @@ require (
     github.com/spf13/cobra v1.10.2          // CLI command dispatch
 )
 ```
-
-### Open questions
-
-- Should `ProxmoxPool` expose a Go interface (for unit-test mocking) or stay a
-  concrete struct? Concrete keeps it simple; an interface adds test seams.
-- Should `tools` subcommands share the same `ProxmoxPool`, or be standalone
-  one-shot commands with their own config load?
-- Confirm `internal/` vs `pkg/` for the shared packages (binary-only suggests
-  `internal/`).
