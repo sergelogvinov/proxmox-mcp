@@ -14,4 +14,25 @@
 
 {{ template "chart.requirementsSection" . }}
 
+## Helm values
+
+```yaml
+# config.yaml
+
+config:
+  clusters:
+    - url: https://cluster-api-1.exmple.com:8006/api2/json
+      insecure: false
+      token_id: "proxmox-mcp@pve!mcp"
+      token_secret: "key"
+      region: cluster-1
+```
+
+## Deploy
+
+```shell
+helm upgrade -i --namespace=kube-system -f config.yaml \
+    proxmox-mcp oci://ghcr.io/sergelogvinov/charts/proxmox-mcp
+```
+
 {{ template "chart.valuesSection" . }}

@@ -90,8 +90,10 @@ func runTools(ctx context.Context, f *Flags, args []string) error {
 	}
 
 	srv := mcp.NewServer(&mcp.Implementation{
-		Name:    bin,
-		Version: version,
+		Name:        bin,
+		Title:       description,
+		Description: description,
+		Version:     version,
 	}, nil)
 
 	tools.NewProxmoxTools(pool).RegisterTools(srv)

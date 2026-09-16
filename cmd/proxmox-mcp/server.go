@@ -79,8 +79,10 @@ func runServer(ctx context.Context, f *Flags) error {
 	)
 
 	srv := mcp.NewServer(&mcp.Implementation{
-		Name:    bin,
-		Version: version,
+		Name:        bin,
+		Title:       description,
+		Description: description,
+		Version:     version,
 	}, &mcp.ServerOptions{
 		Logger: log,
 	})
