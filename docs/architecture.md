@@ -69,10 +69,6 @@ Storage Management:
 - proxmox_storage_list
 - proxmox_storage_describe
 
-Backup Management:
-- proxmox_backups_list
-- proxmox_backups_describe
-
 ## Architecture overview
 
 ```

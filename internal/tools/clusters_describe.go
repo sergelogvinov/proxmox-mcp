@@ -20,8 +20,10 @@ import (
 	"context"
 	"fmt"
 	"slices"
+	"strings"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
+	proxmox "github.com/sergelogvinov/go-proxmox-rest"
 	proxmoxcluster "github.com/sergelogvinov/go-proxmox-rest/cluster"
 	"github.com/sergelogvinov/proxmox-mcp/pkg/formatter"
 )
@@ -31,6 +33,7 @@ type ClustersDescribeResult struct {
 	Cluster       string   `json:"cluster" jsonschema:"Name of the cluster"`
 	Version       string   `json:"version" jsonschema:"Proxmox version"`
 	HAStatus      string   `json:"ha_status,omitempty" jsonschema:"High availability status of the cluster"`
+	CephStatus    string   `json:"ceph_status,omitempty" jsonschema:"Ceph cluster health status"`
 	NodeStatus    string   `json:"node_status" jsonschema:"Node counts in Ready/NotReady/Unknown"`
 	NodeResources string   `json:"node_resources" jsonschema:"Total resources in the cluster (CPU, Memory, Storage)"`
 	Nodes         []string `json:"nodes" jsonschema:"List of nodes"`
@@ -129,9 +132,20 @@ func (t *ProxmoxTools) ClustersDescribe(ctx context.Context, cluster, authToken 
 	nodeStatus := fmt.Sprintf("%d/%d/%d", ready, notReady, unknown)
 	nodeResources := fmt.Sprintf("cpu=%d (used=%.0f%%), memory=%dGiB (used=%dGiB), system storage=%dGiB (used=%dGiB)", cpu, usedCPU*100, memory, usedMemory, storage, usedStorage)
 
+	cephStatus := ""
+	ceph, err := px.Cluster().Ceph().Status(ctx)
+	if err != nil && !proxmox.IsNotFound(err) {
+		return nil, err
+	}
+
+	if ceph.Health != nil {
+		cephStatus = strings.TrimPrefix(strings.ToLower(ceph.Health.Status), "health_")
+	}
+
 	return &ClustersDescribeResult{
 		Cluster:       cluster,
 		Version:       version.Version,
+		CephStatus:    cephStatus,
 		NodeStatus:    nodeStatus,
 		NodeResources: nodeResources,
 		Nodes:         nodes,
