@@ -138,7 +138,7 @@ func (t *ProxmoxTools) ClustersDescribe(ctx context.Context, cluster, authToken 
 		return nil, err
 	}
 
-	if ceph.Health != nil {
+	if ceph != nil && ceph.Health != nil {
 		cephStatus = strings.TrimPrefix(strings.ToLower(ceph.Health.Status), "health_")
 	}
 
