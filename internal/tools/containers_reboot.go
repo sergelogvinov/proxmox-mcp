@@ -58,7 +58,7 @@ func (t *ProxmoxTools) ContainersReboot(ctx context.Context, cluster, node strin
 		return nil, err
 	}
 
-	upid, err := px.Nodes().LXC().Reboot(ctx, node, vmid, nil)
+	upid, err := px.Nodes(node).LXC().Reboot(ctx, vmid, nil)
 	if err != nil {
 		return nil, err
 	}

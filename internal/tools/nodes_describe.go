@@ -97,12 +97,12 @@ func (t *ProxmoxTools) NodesDescribe(ctx context.Context, cluster, node, authTok
 		}
 	}
 
-	status, err := px.Nodes().Status(ctx, node)
+	status, err := px.Nodes(node).Status(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	version, err := px.Nodes().Version(ctx, node)
+	version, err := px.Nodes(node).Version(ctx)
 	if err != nil {
 		return nil, err
 	}

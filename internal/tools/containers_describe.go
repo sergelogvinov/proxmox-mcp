@@ -111,7 +111,7 @@ func (t *ProxmoxTools) ContainersDescribe(ctx context.Context, cluster, node str
 		}
 	}
 
-	status, err := px.Nodes().LXC().Status(ctx, node, vmid)
+	status, err := px.Nodes(node).LXC().Status(ctx, vmid)
 	if err != nil {
 		return nil, err
 	}
@@ -149,7 +149,7 @@ func (t *ProxmoxTools) ContainersDescribe(ctx context.Context, cluster, node str
 	}
 
 	if status.Status == proxmoxlxc.StateRunning {
-		interfaces, err := px.Nodes().LXC().Interfaces(ctx, node, vmid)
+		interfaces, err := px.Nodes(node).LXC().Interfaces(ctx, vmid)
 		if err == nil {
 			result.NetworkInterfaces = make([]GuestNetworkInterface, 0, len(interfaces))
 			for _, networkInterface := range interfaces {

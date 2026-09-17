@@ -106,7 +106,7 @@ func (t *ProxmoxTools) ContainersBackup(ctx context.Context, cluster, node strin
 		}
 	}
 
-	upid, err := px.Nodes().VZDump().Create(ctx, node, &vzdump.Options{
+	upid, err := px.Nodes(node).VZDump().Create(ctx, &vzdump.Options{
 		VMID:     []string{strconv.Itoa(vmid)},
 		Storage:  storage,
 		Mode:     vzdump.Mode(mode),

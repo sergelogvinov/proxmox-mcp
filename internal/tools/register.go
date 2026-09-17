@@ -40,6 +40,7 @@ func (t *ProxmoxTools) RegisterTools(srv *mcp.Server) {
 	t.RegisterClustersList(srv)
 	t.RegisterContainersDescribe(srv)
 	t.RegisterContainersList(srv)
+	t.RegisterContainersBackup(srv)
 	t.RegisterEventsList(srv)
 	t.RegisterNodesDescribe(srv)
 	t.RegisterNodesList(srv)
@@ -47,11 +48,10 @@ func (t *ProxmoxTools) RegisterTools(srv *mcp.Server) {
 	t.RegisterStorageList(srv)
 	t.RegisterVMsDescribe(srv)
 	t.RegisterVMsList(srv)
+	t.RegisterVMsBackup(srv)
 
 	if t.allowDestructive {
-		t.RegisterContainersBackup(srv)
 		t.RegisterContainersReboot(srv)
-		t.RegisterVMsBackup(srv)
 		t.RegisterVMsReboot(srv)
 	}
 }

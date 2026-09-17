@@ -112,7 +112,7 @@ func (t *ProxmoxTools) VMsDescribe(ctx context.Context, cluster, node string, vm
 		}
 	}
 
-	status, err := px.Nodes().Qemu().Status(ctx, node, vmid)
+	status, err := px.Nodes(node).Qemu().Status(ctx, vmid)
 	if err != nil {
 		return nil, err
 	}
@@ -151,11 +151,11 @@ func (t *ProxmoxTools) VMsDescribe(ctx context.Context, cluster, node string, vm
 	}
 
 	if status.Agent && status.Status == "running" {
-		agent := px.Nodes().Qemu().Agent()
-		if err := agent.Ping(ctx, node, vmid); err == nil {
+		agent := px.Nodes(node).Qemu().Agent()
+		if err := agent.Ping(ctx, vmid); err == nil {
 			result.AgentAlive = true
 
-			interfaces, err := agent.NetworkGetInterfaces(ctx, node, vmid)
+			interfaces, err := agent.NetworkGetInterfaces(ctx, vmid)
 			if err == nil {
 				result.NetworkInterfaces = make([]GuestNetworkInterface, 0, len(interfaces))
 				for _, networkInterface := range interfaces {

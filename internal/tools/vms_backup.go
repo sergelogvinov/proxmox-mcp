@@ -106,7 +106,7 @@ func (t *ProxmoxTools) VMsBackup(ctx context.Context, cluster, node string, vmid
 		}
 	}
 
-	upid, err := px.Nodes().VZDump().Create(ctx, node, &vzdump.Options{
+	upid, err := px.Nodes(node).VZDump().Create(ctx, &vzdump.Options{
 		VMID:     []string{strconv.Itoa(vmid)},
 		Storage:  storage,
 		Mode:     vzdump.Mode(mode),

@@ -72,7 +72,7 @@ func (t *ProxmoxTools) VMsReboot(ctx context.Context, cluster, node string, vmid
 		return nil, err
 	}
 
-	upid, err := px.Nodes().Qemu().Reboot(ctx, node, vmid, nil)
+	upid, err := px.Nodes(node).Qemu().Reboot(ctx, vmid, nil)
 	if err != nil {
 		return nil, err
 	}
