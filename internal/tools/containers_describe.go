@@ -25,6 +25,7 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 	proxmoxcluster "github.com/sergelogvinov/go-proxmox-rest/cluster"
 	proxmoxlxc "github.com/sergelogvinov/go-proxmox-rest/nodes/lxc"
+	proxmoxstorage "github.com/sergelogvinov/go-proxmox-rest/nodes/storage"
 	"github.com/sergelogvinov/proxmox-mcp/pkg/formatter"
 )
 
@@ -52,6 +53,7 @@ type ContainersDescribeResult struct {
 	Template          bool                    `json:"template" jsonschema:"Container is a template"`
 	HA                map[string]any          `json:"ha,omitempty" jsonschema:"High availability service status"`
 	NetworkInterfaces []GuestNetworkInterface `json:"network_interfaces,omitempty" jsonschema:"Runtime container network interfaces"`
+	Backups           []StorageContentSummary `json:"backups,omitempty" jsonschema:"Backups available for the container"`
 }
 
 type containersDescribeInput struct {
@@ -172,6 +174,45 @@ func (t *ProxmoxTools) ContainersDescribe(ctx context.Context, cluster, node str
 			})
 		}
 	}
+
+	storages, err := px.Nodes(node).Storage().List(ctx, &proxmoxstorage.ListOptions{
+		Content: []string{"backup"},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	for _, storage := range storages {
+		volumes, err := px.Nodes(node).Storage().Content().List(ctx, storage.Storage, &proxmoxstorage.ContentListOptions{
+			Content: "backup",
+			VMID:    vmid,
+		})
+		if err != nil {
+			return nil, err
+		}
+
+		for _, volume := range volumes {
+			size := volume.Size
+			if size == 0 {
+				size = volume.ApproximateSize
+			}
+
+			result.Backups = append(result.Backups, StorageContentSummary{
+				VolumeID:  volume.VolID,
+				VMID:      volume.VMID,
+				Format:    volume.Format,
+				Size:      size,
+				Used:      volume.Used,
+				CreatedAt: formatStorageContentTime(volume.CTime),
+				Notes:     volume.Notes,
+				Protected: volume.Protected,
+			})
+		}
+	}
+
+	slices.SortFunc(result.Backups, func(a, b StorageContentSummary) int {
+		return strings.Compare(a.VolumeID, b.VolumeID)
+	})
 
 	return result, nil
 }

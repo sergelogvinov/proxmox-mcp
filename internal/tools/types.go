@@ -90,7 +90,7 @@ type StorageContentSummary struct {
 	Format    string `json:"format,omitempty" jsonschema:"Volume format"`
 	Size      int64  `json:"size" jsonschema:"Volume size in bytes"`
 	Used      int64  `json:"used,omitempty" jsonschema:"Used space in bytes"`
-	CreatedAt string `json:"created_at,omitempty" jsonschema:"Volume creation time"`
-	Notes     string `json:"notes,omitempty" jsonschema:"Volume notes"`
-	Protected bool   `json:"protected" jsonschema:"Whether the volume is protected"`
+	CreatedAt string `json:"created_at,omitempty" jsonschema:"Creation time"`
+	Notes     string `json:"notes,omitempty" jsonschema:"Notes"`
+	Protected bool   `json:"protected" jsonschema:"Protected"`
 }
