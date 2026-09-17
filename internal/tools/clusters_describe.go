@@ -130,7 +130,7 @@ func (t *ProxmoxTools) ClustersDescribe(ctx context.Context, cluster, authToken 
 	slices.Sort(nodes)
 
 	nodeStatus := fmt.Sprintf("%d/%d/%d", ready, notReady, unknown)
-	nodeResources := fmt.Sprintf("cpu=%d (used=%.0f%%), memory=%dGiB (used=%dGiB), system storage=%dGiB (used=%dGiB)", cpu, usedCPU*100, memory, usedMemory, storage, usedStorage)
+	nodeResources := fmt.Sprintf("cpu=%d (used=%.0f%%), memory=%dGiB (used=%dGiB), system storage=%dGiB (used=%dGiB)", cpu, (usedCPU/float64(ready))*100, memory, usedMemory, storage, usedStorage)
 
 	cephStatus := ""
 	ceph, err := px.Cluster().Ceph().Status(ctx)
