@@ -31,7 +31,7 @@ func (t *ProxmoxTools) listGuests(ctx context.Context, cluster, authToken, guest
 		return nil, err
 	}
 
-	resources, err := px.Cluster().Resources().Get(ctx, proxmoxcluster.ResourceTypeVM)
+	resources, err := px.Cluster().Resources().List(ctx, proxmoxcluster.ListFilter{Type: proxmoxcluster.ResourceTypeVM})
 	if err != nil {
 		return nil, err
 	}

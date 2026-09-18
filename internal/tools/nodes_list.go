@@ -75,7 +75,7 @@ func (t *ProxmoxTools) NodesList(ctx context.Context, cluster, authToken string)
 		return nil, err
 	}
 
-	resources, err := px.Cluster().Resources().Get(ctx, proxmoxcluster.ResourceTypeNode)
+	resources, err := px.Cluster().Resources().List(ctx, proxmoxcluster.ListFilter{Type: proxmoxcluster.ResourceTypeNode})
 	if err != nil {
 		return nil, err
 	}

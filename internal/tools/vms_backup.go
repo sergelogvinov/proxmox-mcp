@@ -89,7 +89,7 @@ func (t *ProxmoxTools) VMsBackup(ctx context.Context, cluster, node string, vmid
 		return nil, err
 	}
 	if node == "" {
-		resources, err := px.Cluster().Resources().Get(ctx, proxmoxcluster.ResourceTypeVM)
+		resources, err := px.Cluster().Resources().List(ctx, proxmoxcluster.ListFilter{Type: proxmoxcluster.ResourceTypeVM})
 		if err != nil {
 			return nil, err
 		}

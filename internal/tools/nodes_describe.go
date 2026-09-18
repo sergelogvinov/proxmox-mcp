@@ -79,7 +79,7 @@ func (t *ProxmoxTools) NodesDescribe(ctx context.Context, cluster, node, authTok
 		return nil, err
 	}
 
-	resources, err := px.Cluster().Resources().Get(ctx, proxmoxcluster.ResourceTypeNode)
+	resources, err := px.Cluster().Resources().List(ctx, proxmoxcluster.ListFilter{Type: proxmoxcluster.ResourceTypeNode})
 	if err != nil {
 		return nil, err
 	}

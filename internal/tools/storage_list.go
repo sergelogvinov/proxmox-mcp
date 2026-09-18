@@ -75,7 +75,7 @@ func (t *ProxmoxTools) StorageList(ctx context.Context, cluster, authToken strin
 		return nil, err
 	}
 
-	resources, err := px.Cluster().Resources().Get(ctx, proxmoxcluster.ResourceTypeStorage)
+	resources, err := px.Cluster().Resources().List(ctx, proxmoxcluster.ListFilter{Type: proxmoxcluster.ResourceTypeStorage})
 	if err != nil {
 		return nil, err
 	}
