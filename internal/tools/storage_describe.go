@@ -104,7 +104,7 @@ func (t *ProxmoxTools) StorageDescribe(ctx context.Context, cluster, storageName
 		return nil, err
 	}
 
-	volumes, err := px.Nodes(node).Storage().Content().List(ctx, storageName, nil)
+	volumes, err := px.Nodes(node).Storage().Content(storageName).List(ctx, nil)
 	if err != nil {
 		return nil, err
 	}

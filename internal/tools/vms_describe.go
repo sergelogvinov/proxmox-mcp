@@ -188,7 +188,7 @@ func (t *ProxmoxTools) VMsDescribe(ctx context.Context, cluster, node string, vm
 	}
 
 	for _, storage := range storages {
-		volumes, err := px.Nodes(node).Storage().Content().List(ctx, storage.Storage, &proxmoxstorage.ContentListOptions{
+		volumes, err := px.Nodes(node).Storage().Content(storage.Storage).List(ctx, &proxmoxstorage.ContentListOptions{
 			Content: "backup",
 			VMID:    vmid,
 		})

@@ -183,7 +183,7 @@ func (t *ProxmoxTools) ContainersDescribe(ctx context.Context, cluster, node str
 	}
 
 	for _, storage := range storages {
-		volumes, err := px.Nodes(node).Storage().Content().List(ctx, storage.Storage, &proxmoxstorage.ContentListOptions{
+		volumes, err := px.Nodes(node).Storage().Content(storage.Storage).List(ctx, &proxmoxstorage.ContentListOptions{
 			Content: "backup",
 			VMID:    vmid,
 		})
