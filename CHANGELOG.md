@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.2.0](https://github.com/sergelogvinov/proxmox-mcp/compare/v0.1.0...v0.2.0) (2026-09-19)
+
+
+### Features
+
+* add ha status ([aeacc48](https://github.com/sergelogvinov/proxmox-mcp/commit/aeacc4847af24a63a9434d529203120389a4a5d7))
+* backup list ([4520058](https://github.com/sergelogvinov/proxmox-mcp/commit/4520058acd7a691acb89ff6cf77fadd7b4f96a52))
+* ceph status ([4715cc4](https://github.com/sergelogvinov/proxmox-mcp/commit/4715cc4f715e473907197207346d71823ac95c17))
+* describe and backup ([8435543](https://github.com/sergelogvinov/proxmox-mcp/commit/84355435a0a8b5c00749b9efbc175bac43a838f1))
+* vm and container list ([7132b42](https://github.com/sergelogvinov/proxmox-mcp/commit/7132b4203284e451c924a88ce02b279b6e5ae31a))
+* vm and container restart ([93149ef](https://github.com/sergelogvinov/proxmox-mcp/commit/93149ef11a9d27dfee21acdc7cbf174e69de26f1))
+
+
+### Bug Fixes
+
+* ceph status ([8fc9516](https://github.com/sergelogvinov/proxmox-mcp/commit/8fc9516454be096d56b47ad51773165ed97b17f5))
+* cpu status ([4065178](https://github.com/sergelogvinov/proxmox-mcp/commit/4065178bd103eccf607b8324dad4a9fdfbdfe9ed))
+
 ## [0.1.0](https://github.com/sergelogvinov/proxmox-mcp/compare/v0.0.1...v0.1.0) (2026-09-16)
 
 
