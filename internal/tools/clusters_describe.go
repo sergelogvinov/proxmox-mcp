@@ -33,6 +33,7 @@ type ClustersDescribeResult struct {
 	Cluster       string   `json:"cluster" jsonschema:"Name of the cluster"`
 	Version       string   `json:"version" jsonschema:"Proxmox version"`
 	HAStatus      string   `json:"ha_status,omitempty" jsonschema:"High availability status of the cluster"`
+	HAState       []string `json:"ha_state,omitempty" jsonschema:"Local Resource Manager state"`
 	CephStatus    string   `json:"ceph_status,omitempty" jsonschema:"Ceph cluster health status"`
 	NodeStatus    string   `json:"node_status" jsonschema:"Node counts in Ready/NotReady/Unknown"`
 	NodeResources string   `json:"node_resources" jsonschema:"Total resources in the cluster (CPU, Memory, Storage)"`
@@ -142,9 +143,32 @@ func (t *ProxmoxTools) ClustersDescribe(ctx context.Context, cluster, authToken 
 		cephStatus = strings.TrimPrefix(strings.ToLower(ceph.Health.Status), "health_")
 	}
 
+	haStatus := ""
+	haState := []string{}
+	if managerStatus, err := px.Cluster().HA().Status().ManagerStatus(ctx); err == nil && managerStatus != nil {
+		if managerStatus.Quorum != nil && managerStatus.Quorum.Quorate == 1 {
+			haStatus = "quorate"
+		} else {
+			haStatus = "not quorate"
+		}
+
+		for node, lrm := range managerStatus.LRM {
+			mode := lrm.Mode
+			if mode == "" {
+				mode = lrm.State
+			}
+
+			haState = append(haState, fmt.Sprintf("%s=%s", node, mode))
+		}
+
+		slices.Sort(haState)
+	}
+
 	return &ClustersDescribeResult{
 		Cluster:       cluster,
 		Version:       version.Version,
+		HAStatus:      haStatus,
+		HAState:       haState,
 		CephStatus:    cephStatus,
 		NodeStatus:    nodeStatus,
 		NodeResources: nodeResources,
