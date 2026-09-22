@@ -5,10 +5,10 @@ kind: ServiceAccount
 metadata:
   name: proxmox-mcp
   labels:
-    helm.sh/chart: proxmox-mcp-0.0.2
+    helm.sh/chart: proxmox-mcp-0.0.3
     app.kubernetes.io/name: proxmox-mcp
     app.kubernetes.io/instance: proxmox-mcp
-    app.kubernetes.io/version: "v0.1.0"
+    app.kubernetes.io/version: "v0.2.0"
     app.kubernetes.io/managed-by: Helm
 automountServiceAccountToken: true
 
@@ -19,10 +19,10 @@ kind: Service
 metadata:
   name: proxmox-mcp
   labels:
-    helm.sh/chart: proxmox-mcp-0.0.2
+    helm.sh/chart: proxmox-mcp-0.0.3
     app.kubernetes.io/name: proxmox-mcp
     app.kubernetes.io/instance: proxmox-mcp
-    app.kubernetes.io/version: "v0.1.0"
+    app.kubernetes.io/version: "v0.2.0"
     app.kubernetes.io/managed-by: Helm
 spec:
   type: ClusterIP
@@ -45,10 +45,10 @@ kind: Deployment
 metadata:
   name: proxmox-mcp
   labels:
-    helm.sh/chart: proxmox-mcp-0.0.2
+    helm.sh/chart: proxmox-mcp-0.0.3
     app.kubernetes.io/name: proxmox-mcp
     app.kubernetes.io/instance: proxmox-mcp
-    app.kubernetes.io/version: "v0.1.0"
+    app.kubernetes.io/version: "v0.2.0"
     app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
@@ -63,10 +63,10 @@ spec:
   template:
     metadata:
       labels:
-        helm.sh/chart: proxmox-mcp-0.0.2
+        helm.sh/chart: proxmox-mcp-0.0.3
         app.kubernetes.io/name: proxmox-mcp
         app.kubernetes.io/instance: proxmox-mcp
-        app.kubernetes.io/version: "v0.1.0"
+        app.kubernetes.io/version: "v0.2.0"
         app.kubernetes.io/managed-by: Helm
     spec:
       enableServiceLinks: false
