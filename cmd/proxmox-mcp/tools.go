@@ -24,9 +24,9 @@ import (
 	"strings"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
+	proxmoxpool "github.com/sergelogvinov/go-proxmox-pool"
 	"github.com/sergelogvinov/proxmox-mcp/internal/config"
 	"github.com/sergelogvinov/proxmox-mcp/internal/logger"
-	"github.com/sergelogvinov/proxmox-mcp/internal/proxmoxpool"
 	"github.com/sergelogvinov/proxmox-mcp/internal/server"
 	"github.com/sergelogvinov/proxmox-mcp/internal/tools"
 	"github.com/spf13/cobra"

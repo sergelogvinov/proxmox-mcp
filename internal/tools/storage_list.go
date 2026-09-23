@@ -70,7 +70,7 @@ func (t *ProxmoxTools) handlerStorageList(ctx context.Context, req *mcp.CallTool
 
 // StorageList returns storage resources from the Proxmox cluster in the given cluster.
 func (t *ProxmoxTools) StorageList(ctx context.Context, cluster, authToken string) (*StorageListResult, error) {
-	px, err := t.pool.GetProxmoxClusterWithToken(cluster, authToken)
+	px, err := getProxmoxClusterWithToken(t.pool, cluster, authToken)
 	if err != nil {
 		return nil, err
 	}

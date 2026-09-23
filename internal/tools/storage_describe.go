@@ -99,7 +99,7 @@ func (t *ProxmoxTools) StorageDescribe(ctx context.Context, cluster, storageName
 		return result, nil
 	}
 
-	px, err := t.pool.GetProxmoxClusterWithToken(cluster, authToken)
+	px, err := getProxmoxClusterWithToken(t.pool, cluster, authToken)
 	if err != nil {
 		return nil, err
 	}

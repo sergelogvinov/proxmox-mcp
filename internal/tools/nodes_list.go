@@ -70,7 +70,7 @@ func (t *ProxmoxTools) handlerNodesList(ctx context.Context, req *mcp.CallToolRe
 
 // NodesList returns the nodes in the Proxmox cluster in the given cluster.
 func (t *ProxmoxTools) NodesList(ctx context.Context, cluster, authToken string) (*NodesListResult, error) {
-	px, err := t.pool.GetProxmoxClusterWithToken(cluster, authToken)
+	px, err := getProxmoxClusterWithToken(t.pool, cluster, authToken)
 	if err != nil {
 		return nil, err
 	}

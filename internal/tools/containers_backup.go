@@ -84,7 +84,7 @@ func (t *ProxmoxTools) ContainersBackup(ctx context.Context, cluster, node strin
 		return nil, err
 	}
 
-	px, err := t.pool.GetProxmoxClusterWithToken(cluster, authToken)
+	px, err := getProxmoxClusterWithToken(t.pool, cluster, authToken)
 	if err != nil {
 		return nil, err
 	}

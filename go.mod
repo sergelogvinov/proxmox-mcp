@@ -2,11 +2,12 @@ module github.com/sergelogvinov/proxmox-mcp
 
 go 1.27.1
 
-// replace github.com/sergelogvinov/go-proxmox-rest => ../proxmox/go-proxmox-rest
+// replace github.com/sergelogvinov/go-proxmox-rest => ../go-proxmox-rest
+// replace github.com/sergelogvinov/go-proxmox-pool => ../go-proxmox-pool
 
 require (
 	github.com/modelcontextprotocol/go-sdk v1.8.0
-	github.com/pkg/errors v0.9.1
+	github.com/sergelogvinov/go-proxmox-pool v0.0.0-20260923034137-60822ad176fa
 	github.com/sergelogvinov/go-proxmox-rest v0.0.0-20260922140521-cb1976ec06d4
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.0.10

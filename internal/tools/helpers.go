@@ -22,11 +22,36 @@ import (
 	"slices"
 	"strings"
 
+	proxmoxpool "github.com/sergelogvinov/go-proxmox-pool"
+	proxmoxrest "github.com/sergelogvinov/go-proxmox-rest"
 	proxmoxcluster "github.com/sergelogvinov/go-proxmox-rest/cluster"
 )
 
+// getProxmoxClusterWithToken returns a Proxmox cluster client for the given
+// cluster. When authToken is non-empty, a client is built that passes the
+// token through to the Proxmox API verbatim instead of the pool's
+// pre-configured cloud-config credentials.
+func getProxmoxClusterWithToken(pool *proxmoxpool.ProxmoxPool, cluster, authToken string) (*proxmoxrest.Client, error) {
+	client, err := pool.Get(cluster)
+	if err != nil {
+		return nil, err
+	}
+
+	if authToken == "" {
+		return client, nil
+	}
+
+	// Clean the existing authentication fields to ensure only the token is used.
+	cfg := client.ToRESTConfig()
+	cfg.Username = ""
+	cfg.Password = ""
+	cfg.Token, cfg.TokenSecret, _ = strings.Cut(authToken, "=")
+
+	return proxmoxrest.New(cfg)
+}
+
 func (t *ProxmoxTools) listGuests(ctx context.Context, cluster, authToken, guestType string) ([]GuestSummary, error) {
-	px, err := t.pool.GetProxmoxClusterWithToken(cluster, authToken)
+	px, err := getProxmoxClusterWithToken(t.pool, cluster, authToken)
 	if err != nil {
 		return nil, err
 	}

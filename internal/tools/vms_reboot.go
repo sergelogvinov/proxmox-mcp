@@ -67,7 +67,7 @@ func (t *ProxmoxTools) handlerVMsReboot(ctx context.Context, req *mcp.CallToolRe
 
 // VMsReboot gracefully reboots a QEMU virtual machine.
 func (t *ProxmoxTools) VMsReboot(ctx context.Context, cluster, node string, vmid int, authToken string) (*GuestRebootResult, error) {
-	px, err := t.pool.GetProxmoxClusterWithToken(cluster, authToken)
+	px, err := getProxmoxClusterWithToken(t.pool, cluster, authToken)
 	if err != nil {
 		return nil, err
 	}

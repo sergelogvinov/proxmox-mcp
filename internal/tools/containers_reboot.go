@@ -53,7 +53,7 @@ func (t *ProxmoxTools) handlerContainersReboot(ctx context.Context, req *mcp.Cal
 
 // ContainersReboot gracefully reboots an LXC container.
 func (t *ProxmoxTools) ContainersReboot(ctx context.Context, cluster, node string, vmid int, authToken string) (*GuestRebootResult, error) {
-	px, err := t.pool.GetProxmoxClusterWithToken(cluster, authToken)
+	px, err := getProxmoxClusterWithToken(t.pool, cluster, authToken)
 	if err != nil {
 		return nil, err
 	}

@@ -76,7 +76,7 @@ func (t *ProxmoxTools) handlerClustersDescribe(ctx context.Context, req *mcp.Cal
 
 // ClustersDescribe returns details of the Proxmox cluster in the given cluster.
 func (t *ProxmoxTools) ClustersDescribe(ctx context.Context, cluster, authToken string) (*ClustersDescribeResult, error) {
-	px, err := t.pool.GetProxmoxClusterWithToken(cluster, authToken)
+	px, err := getProxmoxClusterWithToken(t.pool, cluster, authToken)
 	if err != nil {
 		return nil, err
 	}

@@ -80,7 +80,7 @@ func (t *ProxmoxTools) EventsList(ctx context.Context, cluster string, limit int
 		limit = defaultEventsLimit
 	}
 
-	px, err := t.pool.GetProxmoxClusterWithToken(cluster, authToken)
+	px, err := getProxmoxClusterWithToken(t.pool, cluster, authToken)
 	if err != nil {
 		return nil, err
 	}

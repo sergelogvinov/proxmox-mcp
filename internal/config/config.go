@@ -25,7 +25,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	pxpool "github.com/sergelogvinov/proxmox-mcp/internal/proxmoxpool"
+	pxpool "github.com/sergelogvinov/go-proxmox-pool"
 	yaml "go.yaml.in/yaml/v3"
 )
 
@@ -40,7 +40,7 @@ type Config struct {
 
 // ClustersConfig is proxmox multi-cluster cloud config.
 type ClustersConfig struct {
-	Clusters []*pxpool.ProxmoxCluster `yaml:"clusters,omitempty"`
+	Clusters []*pxpool.ClusterConfig `yaml:"clusters,omitempty"`
 }
 
 // Errors for Reading Cloud Config

@@ -47,7 +47,7 @@ func (t *ProxmoxTools) RegisterClustersList(srv *mcp.Server) {
 }
 
 func (t *ProxmoxTools) handlerClustersList(_ context.Context, _ *mcp.CallToolRequest, _ struct{}) (*mcp.CallToolResult, any, error) {
-	clusters := t.pool.GetClusters()
+	clusters := t.pool.List()
 	slices.Sort(clusters)
 
 	result := &ClustersListResult{

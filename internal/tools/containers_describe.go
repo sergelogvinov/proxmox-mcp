@@ -91,7 +91,7 @@ func (t *ProxmoxTools) handlerContainersDescribe(ctx context.Context, req *mcp.C
 
 // ContainersDescribe returns the current status of an LXC container.
 func (t *ProxmoxTools) ContainersDescribe(ctx context.Context, cluster, node string, vmid int, authToken string) (*ContainersDescribeResult, error) {
-	px, err := t.pool.GetProxmoxClusterWithToken(cluster, authToken)
+	px, err := getProxmoxClusterWithToken(t.pool, cluster, authToken)
 	if err != nil {
 		return nil, err
 	}

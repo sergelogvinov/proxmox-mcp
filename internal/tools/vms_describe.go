@@ -92,7 +92,7 @@ func (t *ProxmoxTools) handlerVMsDescribe(ctx context.Context, req *mcp.CallTool
 
 // VMsDescribe returns the current status of a QEMU virtual machine.
 func (t *ProxmoxTools) VMsDescribe(ctx context.Context, cluster, node string, vmid int, authToken string) (*VMsDescribeResult, error) {
-	px, err := t.pool.GetProxmoxClusterWithToken(cluster, authToken)
+	px, err := getProxmoxClusterWithToken(t.pool, cluster, authToken)
 	if err != nil {
 		return nil, err
 	}

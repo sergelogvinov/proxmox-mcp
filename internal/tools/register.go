@@ -20,7 +20,7 @@ import (
 	"strings"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
-	"github.com/sergelogvinov/proxmox-mcp/internal/proxmoxpool"
+	proxmoxpool "github.com/sergelogvinov/go-proxmox-pool"
 )
 
 // ProxmoxTools provides tool handlers with access to the Proxmox cluster pool.

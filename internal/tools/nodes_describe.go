@@ -74,7 +74,7 @@ func (t *ProxmoxTools) handlerNodesDescribe(ctx context.Context, req *mcp.CallTo
 
 // NodesDescribe returns details of a node in the Proxmox cluster in the given cluster.
 func (t *ProxmoxTools) NodesDescribe(ctx context.Context, cluster, node, authToken string) (*NodesDescribeResult, error) {
-	px, err := t.pool.GetProxmoxClusterWithToken(cluster, authToken)
+	px, err := getProxmoxClusterWithToken(t.pool, cluster, authToken)
 	if err != nil {
 		return nil, err
 	}
