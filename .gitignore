@@ -12,6 +12,7 @@ certs/
 bin/
 dist/
 bundle/
+.devcontainer/
 
 # Test binary, built with `go test -c`
 *.test
