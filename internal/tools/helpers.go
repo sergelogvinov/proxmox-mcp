@@ -25,6 +25,7 @@ import (
 	proxmoxpool "github.com/sergelogvinov/go-proxmox-pool"
 	proxmoxrest "github.com/sergelogvinov/go-proxmox-rest"
 	proxmoxcluster "github.com/sergelogvinov/go-proxmox-rest/cluster"
+	proxmoxtypes "github.com/sergelogvinov/go-proxmox-rest/types"
 )
 
 // getProxmoxClusterWithToken returns a Proxmox cluster client for the given
@@ -67,7 +68,7 @@ func (t *ProxmoxTools) listGuests(ctx context.Context, cluster, authToken, guest
 			continue
 		}
 
-		if resource.Name == "node-capacity" && resource.Tags == "karpenter" {
+		if resource.Name == "node-capacity" && slices.Contains(resource.Tags, "karpenter") {
 			continue
 		}
 
@@ -86,11 +87,7 @@ func (t *ProxmoxTools) listGuests(ctx context.Context, cluster, authToken, guest
 }
 
 func newGuestSummary(resource proxmoxcluster.Resource) GuestSummary {
-	tags := strings.FieldsFunc(resource.Tags, func(r rune) bool { return r == ',' || r == ';' })
-	for i := range tags {
-		tags[i] = strings.TrimSpace(tags[i])
-	}
-	slices.Sort(tags)
+	tags := normalizeTags(resource.Tags)
 
 	uptime := ""
 	if resource.Uptime > 0 {
@@ -114,4 +111,15 @@ func newGuestSummary(resource proxmoxcluster.Resource) GuestSummary {
 			resource.MaxDisk/(1024*1024*1024),
 		),
 	}
+}
+
+// normalizeTags trims and sorts a Proxmox tag list.
+func normalizeTags(tags proxmoxtypes.Tags) []string {
+	out := make([]string, len(tags))
+	for i, tag := range tags {
+		out[i] = strings.TrimSpace(tag)
+	}
+	slices.Sort(out)
+
+	return out
 }

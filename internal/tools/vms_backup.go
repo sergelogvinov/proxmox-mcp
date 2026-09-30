@@ -129,7 +129,7 @@ func validateBackupMode(mode string) error {
 }
 
 func validateBackupCompression(compress string) error {
-	switch vzdump.Compress(compress) {
+	switch vzdump.Compress(compress) { //nolint:exhaustive
 	case "", vzdump.CompressNone, vzdump.CompressGzip, vzdump.CompressLZO, vzdump.CompressZstd:
 		return nil
 	default:

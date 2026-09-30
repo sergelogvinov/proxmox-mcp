@@ -119,11 +119,7 @@ func (t *ProxmoxTools) VMsDescribe(ctx context.Context, cluster, node string, vm
 		return nil, err
 	}
 
-	tags := strings.FieldsFunc(status.Tags, func(r rune) bool { return r == ',' || r == ';' })
-	for i := range tags {
-		tags[i] = strings.TrimSpace(tags[i])
-	}
-	slices.Sort(tags)
+	tags := normalizeTags(status.Tags)
 
 	result := &VMsDescribeResult{
 		Cluster:        cluster,

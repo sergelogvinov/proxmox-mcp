@@ -7,8 +7,8 @@ go 1.27.1
 
 require (
 	github.com/modelcontextprotocol/go-sdk v1.8.0
-	github.com/sergelogvinov/go-proxmox-pool v0.0.0-20260923034137-60822ad176fa
-	github.com/sergelogvinov/go-proxmox-rest v0.0.0-20260922140521-cb1976ec06d4
+	github.com/sergelogvinov/go-proxmox-pool v0.1.0
+	github.com/sergelogvinov/go-proxmox-rest v0.1.0
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.0.10
 	github.com/stretchr/testify v1.12.1
