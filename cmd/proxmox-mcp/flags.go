@@ -17,8 +17,11 @@ limitations under the License.
 package main
 
 import (
+	"fmt"
+	"net"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/sergelogvinov/proxmox-mcp/internal/config"
 	"github.com/spf13/pflag"
@@ -30,14 +33,14 @@ const (
 	flagConfigFile       = "config"
 	flagLogLevel         = "log-level"
 	flagLogFormat        = "log-format"
-	flagPort             = "port"
+	flagListenAddress    = "listen-address"
 
 	envExtensions       = "EXTENSIONS"
 	envAllowDestructive = "ALLOW_DESTRUCTIVE"
 	envConfigFile       = "CONFIG_FILE"
 	envLogLevel         = "LOG_LEVEL"
 	envLogFormat        = "LOG_FORMAT"
-	envPort             = "PORT"
+	envListenAddress    = "LISTEN_ADDRESS"
 )
 
 const (
@@ -45,7 +48,7 @@ const (
 	defaultAllowDestructive = false
 	defaultLogLevel         = "info"
 	defaultLogFormat        = "text"
-	defaultPort             = 8080
+	defaultListenAddress    = "127.0.0.1:8080"
 	defaultOutputFormat     = "text"
 )
 
@@ -56,7 +59,7 @@ type Flags struct {
 	ConfigFile       string
 	LogLevel         string
 	LogFormat        string
-	Port             int
+	ListenAddress    string
 	Output           string
 }
 
@@ -69,7 +72,7 @@ func DefaultFlags() *Flags {
 		ConfigFile:       withDefaultEnv(envConfigFile, ""),
 		LogLevel:         withDefaultEnv(envLogLevel, defaultLogLevel),
 		LogFormat:        withDefaultEnv(envLogFormat, defaultLogFormat),
-		Port:             withDefaultEnvInt(envPort, defaultPort),
+		ListenAddress:    withDefaultEnv(envListenAddress, defaultListenAddress),
 		Output:           defaultOutputFormat,
 	}
 }
@@ -86,7 +89,8 @@ func (f *Flags) AddPersistentFlags(flags *pflag.FlagSet) {
 
 // AddServerFlags adds the flags for the "server" subcommand.
 func (f *Flags) AddServerFlags(flags *pflag.FlagSet) {
-	flags.IntVarP(&f.Port, flagPort, "", f.Port, "http/sse listen port (default: 8080)")
+	flags.StringVarP(&f.ListenAddress, flagListenAddress, "", f.ListenAddress,
+		"http listen address as host:port; use :8080 to accept connections on all IPv4 and IPv6 addresses (default: 127.0.0.1:8080)")
 }
 
 // AddToolFlags adds the flags for the "tool" subcommand.
@@ -97,7 +101,6 @@ func (f *Flags) AddToolFlags(flags *pflag.FlagSet) {
 // Config returns the internal config populated from the parsed flags.
 func (f *Flags) Config() (*config.Config, error) {
 	return &config.Config{
-		Port:             f.Port,
 		Extensions:       f.Extensions,
 		AllowDestructive: f.AllowDestructive,
 		LogLevel:         f.LogLevel,
@@ -105,18 +108,28 @@ func (f *Flags) Config() (*config.Config, error) {
 	}, nil
 }
 
+// listenAddress validates ListenAddress and returns it. An empty host
+// listens on every IPv4 and IPv6 address.
+func (f *Flags) listenAddress() (string, error) {
+	_, port, err := net.SplitHostPort(f.ListenAddress)
+	if err != nil {
+		if strings.Count(f.ListenAddress, ":") > 1 && !strings.HasPrefix(f.ListenAddress, "[") {
+			return "", fmt.Errorf("invalid listen address %q: write an IPv6 address in brackets, like [::1]:8080", f.ListenAddress)
+		}
+
+		return "", fmt.Errorf("invalid listen address %q: must be host:port, like 127.0.0.1:8080 or :8080", f.ListenAddress)
+	}
+
+	if n, err := strconv.Atoi(port); err != nil || n < 1 || n > 65535 {
+		return "", fmt.Errorf("invalid listen port %q: must be a number between 1 and 65535", port)
+	}
+
+	return f.ListenAddress, nil
+}
+
 func withDefaultEnv(key string, def string) string {
 	if val, ok := os.LookupEnv(key); ok {
 		return val
-	}
-	return def
-}
-
-func withDefaultEnvInt(key string, def int) int {
-	if val, ok := os.LookupEnv(key); ok {
-		if n, err := strconv.Atoi(val); err == nil {
-			return n
-		}
 	}
 	return def
 }

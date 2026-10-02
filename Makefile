@@ -69,7 +69,7 @@ build:
 
 .PHONY: run
 run: ## Run
-	go run $(GO_LDFLAGS) ./cmd/proxmox-mcp server --port 8080 --log-level=debug --allow-destructive --extensions=all
+	go run $(GO_LDFLAGS) ./cmd/proxmox-mcp server --listen-address :8080 --log-level=debug --allow-destructive --extensions=all
 
 .PHONY: run-mcp
 run-mcp: ## Run mcp

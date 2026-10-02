@@ -74,7 +74,7 @@ Storage Management:
 ```
 cmd/proxmox-mcp (cobra root)
    |-- mcp      -> stdio transport
-   |-- server   -> SSE transport  (--port, --allow-destructive, --extensions)
+   |-- server   -> SSE transport  (--listen-address, --allow-destructive, --extensions)
    |-- version
    `-- tools    -> ad-hoc Proxmox management tasks
           |

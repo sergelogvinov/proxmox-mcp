@@ -26,6 +26,7 @@ COPY --from=gcr.io/distroless/static-debian13:nonroot . .
 ARG TARGETARCH
 COPY --from=builder /src/bin/proxmox-mcp-${TARGETARCH} /bin/proxmox-mcp
 
+ENV LISTEN_ADDRESS=:8080
 ENTRYPOINT ["/bin/proxmox-mcp"]
 
 ########################################
@@ -36,4 +37,5 @@ COPY --from=gcr.io/distroless/static-debian13:nonroot . .
 ARG TARGETPLATFORM
 COPY ${TARGETPLATFORM}/proxmox-mcp /bin/proxmox-mcp
 
+ENV LISTEN_ADDRESS=:8080
 ENTRYPOINT ["/bin/proxmox-mcp"]
