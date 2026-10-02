@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.0](https://github.com/sergelogvinov/proxmox-mcp/compare/v0.2.0...v0.3.0) (2026-10-02)
+
+
+### Features
+
+* update server to use listen-address instead of port ([3038b1e](https://github.com/sergelogvinov/proxmox-mcp/commit/3038b1ecdc831f275f45b42ae61123b57a2df2a1))
+
+
+### Bug Fixes
+
+* schema for other clients ([5081270](https://github.com/sergelogvinov/proxmox-mcp/commit/50812707fece062364eb537ce7f72c120ceebc00))
+
 ## [0.2.0](https://github.com/sergelogvinov/proxmox-mcp/compare/v0.1.0...v0.2.0) (2026-09-22)
 
 
