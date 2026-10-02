@@ -139,9 +139,11 @@ Start the streamable HTTP server with:
 ```sh
 proxmox-mcp server \
   --config /absolute/path/to/cluster-config.yaml \
-  --port 8080
+  --listen-address :8080
 ```
 
+`:8080` accepts connections on every IPv4 and IPv6 address. To listen on one
+address, give it with the port, for example `127.0.0.1:8080` or `[::1]:8080`.
 The MCP endpoint is `http://host:8080/mcp`
 
 For a remote client, use an HTTPS URL that ends with `/mcp`:
@@ -190,8 +192,9 @@ priority than an environment variable.
 | `--log-level <level>` | `LOG_LEVEL` | `info` | Log level: `debug`, `info`, `warn`, or `error`. |
 | `--log-format <format>` | `LOG_FORMAT` | `text` | Log output format: `text` or `json`. |
 
-The `server` command also accepts `--port` or `PORT`. The default port is
-`8080`. The `tools` command accepts `--output` (`-o`) with `text`, `json`, or
+The `server` command also accepts `--listen-address` or `LISTEN_ADDRESS`
+(`host:port`). The default is `127.0.0.1:8080`, and the container image sets
+`LISTEN_ADDRESS=:8080`. The `tools` command accepts `--output` (`-o`) with `text`, `json`, or
 `yaml`. Its default is `text`.
 
 For example, run the stdio server with JSON logs:

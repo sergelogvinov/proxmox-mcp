@@ -50,7 +50,6 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
             - server
-            - --port=8080
             - --config=/etc/proxmox/config.yaml
           {{- with .Values.args }}
             {{- . | toYaml | nindent 12 }}

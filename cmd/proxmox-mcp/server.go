@@ -52,6 +52,11 @@ func newServerCmd(flags *Flags) *cobra.Command {
 
 // runServer loads the clusters config, creates the Proxmox pool, and serves MCP over HTTP/SSE.
 func runServer(ctx context.Context, f *Flags) error {
+	addr, err := f.listenAddress()
+	if err != nil {
+		return err
+	}
+
 	cfg, err := f.Config()
 	if err != nil {
 		return err
@@ -73,7 +78,7 @@ func runServer(ctx context.Context, f *Flags) error {
 	}
 
 	log.Info("starting MCP server",
-		"address", fmt.Sprintf(":%d", cfg.Port),
+		"address", addr,
 		"allowDestructive", cfg.AllowDestructive,
 		"extensions", cfg.Extensions,
 	)
@@ -98,7 +103,7 @@ func runServer(ctx context.Context, f *Flags) error {
 	})
 
 	httpServer := &http.Server{
-		Addr: fmt.Sprintf(":%d", cfg.Port),
+		Addr: addr,
 		Handler: func() http.Handler {
 			return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				mux.ServeHTTP(w, r.WithContext(logger.Inject(r.Context(), log)))

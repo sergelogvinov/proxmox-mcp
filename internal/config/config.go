@@ -31,7 +31,6 @@ import (
 
 // Config holds the configuration for the proxmox-mcp server.
 type Config struct {
-	Port             int
 	Extensions       string
 	AllowDestructive bool
 	LogLevel         string
