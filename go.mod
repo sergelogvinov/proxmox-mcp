@@ -6,6 +6,7 @@ go 1.27.1
 // replace github.com/sergelogvinov/go-proxmox-pool => ../go-proxmox-pool
 
 require (
+	github.com/google/jsonschema-go v0.4.3
 	github.com/modelcontextprotocol/go-sdk v1.8.0
 	github.com/sergelogvinov/go-proxmox-pool v0.1.0
 	github.com/sergelogvinov/go-proxmox-rest v0.1.0
@@ -16,7 +17,6 @@ require (
 )
 
 require (
-	github.com/google/jsonschema-go v0.4.3 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/segmentio/asm v1.2.1 // indirect
 	github.com/segmentio/encoding v0.5.4 // indirect

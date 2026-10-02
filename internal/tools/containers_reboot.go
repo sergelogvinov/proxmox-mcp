@@ -25,7 +25,7 @@ import (
 
 // RegisterContainersReboot registers the container reboot tool.
 func (t *ProxmoxTools) RegisterContainersReboot(srv *mcp.Server) {
-	mcp.AddTool(srv,
+	addTool(srv,
 		&mcp.Tool{
 			Name:        "proxmox_containers_reboot",
 			Description: "Gracefully reboot an LXC container and return the task identifier.",

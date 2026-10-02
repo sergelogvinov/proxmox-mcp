@@ -64,7 +64,7 @@ type containersDescribeInput struct {
 
 // RegisterContainersDescribe registers the container describe tool.
 func (t *ProxmoxTools) RegisterContainersDescribe(srv *mcp.Server) {
-	mcp.AddTool(srv,
+	addTool(srv,
 		&mcp.Tool{
 			Name:        "proxmox_containers_describe",
 			Description: "Describe an LXC container, including its current status and runtime network interfaces when running.",

@@ -47,7 +47,7 @@ type clustersDescribeInput struct {
 
 // RegisterClustersDescribe registers the clusters describe tool.
 func (t *ProxmoxTools) RegisterClustersDescribe(srv *mcp.Server) {
-	mcp.AddTool(srv,
+	addTool(srv,
 		&mcp.Tool{
 			Name:        "proxmox_clusters_describe",
 			Description: "Describe a Proxmox cluster: returns its version, nodes, node statuses, and total node resources.",

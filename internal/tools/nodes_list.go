@@ -41,7 +41,7 @@ type nodesListInput struct {
 
 // RegisterNodesList registers the nodes list tool.
 func (t *ProxmoxTools) RegisterNodesList(srv *mcp.Server) {
-	mcp.AddTool(srv,
+	addTool(srv,
 		&mcp.Tool{
 			Name:        "proxmox_nodes_list",
 			Description: "List the nodes in a Proxmox cluster, including each node's status and resource usage.",

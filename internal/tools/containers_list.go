@@ -36,7 +36,7 @@ type containersListInput struct {
 
 // RegisterContainersList registers the containers list tool.
 func (t *ProxmoxTools) RegisterContainersList(srv *mcp.Server) {
-	mcp.AddTool(srv,
+	addTool(srv,
 		&mcp.Tool{
 			Name:        "proxmox_containers_list",
 			Description: "List LXC containers in a Proxmox cluster, including status and resource usage.",

@@ -46,7 +46,7 @@ type containersBackupInput struct {
 
 // RegisterContainersBackup registers the container backup tool.
 func (t *ProxmoxTools) RegisterContainersBackup(srv *mcp.Server) {
-	mcp.AddTool(srv,
+	addTool(srv,
 		&mcp.Tool{
 			Name:        "proxmox_containers_backup",
 			Description: "Start a backup of one LXC container and return the asynchronous task identifier.",

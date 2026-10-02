@@ -39,7 +39,7 @@ type guestRebootInput struct {
 
 // RegisterVMsReboot registers the virtual machine reboot tool.
 func (t *ProxmoxTools) RegisterVMsReboot(srv *mcp.Server) {
-	mcp.AddTool(srv,
+	addTool(srv,
 		&mcp.Tool{
 			Name:        "proxmox_vms_reboot",
 			Description: "Gracefully reboot a QEMU virtual machine and return the task identifier.",

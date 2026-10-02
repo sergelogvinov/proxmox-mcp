@@ -41,7 +41,7 @@ type storageListInput struct {
 
 // RegisterStorageList registers the storage list tool.
 func (t *ProxmoxTools) RegisterStorageList(srv *mcp.Server) {
-	mcp.AddTool(srv,
+	addTool(srv,
 		&mcp.Tool{
 			Name:        "proxmox_storage_list",
 			Description: "List storage resources in a Proxmox cluster, including status, type, content, and capacity usage.",

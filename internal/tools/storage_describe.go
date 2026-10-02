@@ -45,7 +45,7 @@ type storageDescribeInput struct {
 
 // RegisterStorageDescribe registers the storage describe tool.
 func (t *ProxmoxTools) RegisterStorageDescribe(srv *mcp.Server) {
-	mcp.AddTool(srv,
+	addTool(srv,
 		&mcp.Tool{
 			Name:        "proxmox_storage_describe",
 			Description: "Describe a Proxmox storage. When a node is specified, also list the storage content visible on that node.",
