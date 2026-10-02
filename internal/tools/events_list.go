@@ -44,7 +44,7 @@ type eventsListInput struct {
 
 // RegisterEventsList registers the events list tool.
 func (t *ProxmoxTools) RegisterEventsList(srv *mcp.Server) {
-	mcp.AddTool(srv,
+	addTool(srv,
 		&mcp.Tool{
 			Name:        "proxmox_events_list",
 			Description: "List recent Proxmox task events across all nodes in a cluster. Returns 10 events by default.",

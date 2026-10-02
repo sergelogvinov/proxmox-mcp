@@ -36,7 +36,7 @@ type vmsListInput struct {
 
 // RegisterVMsList registers the virtual machines list tool.
 func (t *ProxmoxTools) RegisterVMsList(srv *mcp.Server) {
-	mcp.AddTool(srv,
+	addTool(srv,
 		&mcp.Tool{
 			Name:        "proxmox_vms_list",
 			Description: "List QEMU virtual machines in a Proxmox cluster, including status and resource usage.",

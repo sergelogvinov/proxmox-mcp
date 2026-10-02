@@ -65,7 +65,7 @@ type vmsDescribeInput struct {
 
 // RegisterVMsDescribe registers the virtual machine describe tool.
 func (t *ProxmoxTools) RegisterVMsDescribe(srv *mcp.Server) {
-	mcp.AddTool(srv,
+	addTool(srv,
 		&mcp.Tool{
 			Name:        "proxmox_vms_describe",
 			Description: "Describe a QEMU virtual machine, including current status and guest network interfaces when its QEMU guest agent is responding.",

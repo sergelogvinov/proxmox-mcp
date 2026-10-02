@@ -45,7 +45,7 @@ type nodesDescribeInput struct {
 
 // RegisterNodesDescribe registers the nodes describe tool.
 func (t *ProxmoxTools) RegisterNodesDescribe(srv *mcp.Server) {
-	mcp.AddTool(srv,
+	addTool(srv,
 		&mcp.Tool{
 			Name:        "proxmox_nodes_describe",
 			Description: "Describe a Proxmox node: returns its status, resources, uptime, version, current kernel, and boot information.",

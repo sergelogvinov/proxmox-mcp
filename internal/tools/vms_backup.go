@@ -46,7 +46,7 @@ type vmsBackupInput struct {
 
 // RegisterVMsBackup registers the virtual machine backup tool.
 func (t *ProxmoxTools) RegisterVMsBackup(srv *mcp.Server) {
-	mcp.AddTool(srv,
+	addTool(srv,
 		&mcp.Tool{
 			Name:        "proxmox_vms_backup",
 			Description: "Start a backup of one QEMU virtual machine and return the asynchronous task identifier.",

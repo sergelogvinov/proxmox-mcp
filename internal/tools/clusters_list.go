@@ -32,7 +32,7 @@ type ClustersListResult struct {
 
 // RegisterClustersList registers the clusters list tool.
 func (t *ProxmoxTools) RegisterClustersList(srv *mcp.Server) {
-	mcp.AddTool(srv,
+	addTool(srv,
 		&mcp.Tool{
 			Name:        "proxmox_clusters_list",
 			Description: "List the Proxmox clusters configured in the MCP server.",
