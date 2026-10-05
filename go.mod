@@ -8,8 +8,8 @@ go 1.27.1
 require (
 	github.com/google/jsonschema-go v0.4.3
 	github.com/modelcontextprotocol/go-sdk v1.8.0
-	github.com/sergelogvinov/go-proxmox-pool v0.1.0
-	github.com/sergelogvinov/go-proxmox-rest v0.1.0
+	github.com/sergelogvinov/go-proxmox-pool v0.2.0
+	github.com/sergelogvinov/go-proxmox-rest v0.1.1
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.0.10
 	github.com/stretchr/testify v1.12.1
@@ -26,5 +26,5 @@ require (
 	golang.org/x/sync v0.23.0 // indirect
 	golang.org/x/sys v0.48.0 // indirect
 	golang.org/x/time v0.16.0 // indirect
-	resty.dev/v3 v3.0.0-rc.4 // indirect
+	resty.dev/v3 v3.0.0-rc.4.0.20261004062424-dabdb4c45c53 // indirect
 )
