@@ -17,12 +17,15 @@ updates:
     cooldown:
       default-days: 7
     groups:
-      docker:
-        patterns:
-          - "docker/*"
       actions:
         patterns:
           - "actions/*"
+          - "azure/*"
+          - "docker/*"
+          - "sigstore/*"
+      helm:
+        patterns:
+          - "helm/*"
 
   - package-ecosystem: "gomod"
     directory: "/"
@@ -38,8 +41,10 @@ updates:
     groups:
       spf13:
         patterns:
-          - "github.com/spf13/cobra"
-          - "github.com/spf13/pflag"
+          - "github.com/spf13/*"
+      proxmox:
+        patterns:
+          - "github.com/sergelogvinov/*"
 
   - package-ecosystem: "docker"
     directory: "/"

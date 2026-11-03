@@ -116,7 +116,7 @@ func (t *ProxmoxTools) VMsBackup(ctx context.Context, cluster, node string, vmid
 		return nil, err
 	}
 
-	return &VMsBackupResult{Cluster: cluster, Node: node, VMID: vmid, UPID: upid}, nil
+	return &VMsBackupResult{Cluster: cluster, Node: node, VMID: vmid, UPID: upid.UPID()}, nil
 }
 
 func validateBackupMode(mode string) error {

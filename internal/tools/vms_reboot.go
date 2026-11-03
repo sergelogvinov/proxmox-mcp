@@ -77,5 +77,5 @@ func (t *ProxmoxTools) VMsReboot(ctx context.Context, cluster, node string, vmid
 		return nil, err
 	}
 
-	return &GuestRebootResult{Cluster: cluster, Node: node, VMID: vmid, UPID: upid}, nil
+	return &GuestRebootResult{Cluster: cluster, Node: node, VMID: vmid, UPID: upid.UPID()}, nil
 }

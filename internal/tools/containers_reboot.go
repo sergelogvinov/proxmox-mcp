@@ -63,5 +63,5 @@ func (t *ProxmoxTools) ContainersReboot(ctx context.Context, cluster, node strin
 		return nil, err
 	}
 
-	return &GuestRebootResult{Cluster: cluster, Node: node, VMID: vmid, UPID: upid}, nil
+	return &GuestRebootResult{Cluster: cluster, Node: node, VMID: vmid, UPID: upid.UPID()}, nil
 }

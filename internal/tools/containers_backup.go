@@ -116,5 +116,5 @@ func (t *ProxmoxTools) ContainersBackup(ctx context.Context, cluster, node strin
 		return nil, err
 	}
 
-	return &ContainersBackupResult{Cluster: cluster, Node: node, VMID: vmid, UPID: upid}, nil
+	return &ContainersBackupResult{Cluster: cluster, Node: node, VMID: vmid, UPID: upid.UPID()}, nil
 }
